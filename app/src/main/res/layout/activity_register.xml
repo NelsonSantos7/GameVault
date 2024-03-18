@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".login.Register">
+
+  <EditText
+      android:id="@+id/etUsernameReg"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="Username" />
+
+  <EditText
+      android:id="@+id/etPasswordReg"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="Password"
+      android:inputType="textPassword"
+      android:layout_below="@id/etUsernameReg" />
+
+  <EditText
+      android:id="@+id/etConfirmPassword"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:hint="Confirm Password"
+      android:inputType="textPassword"
+      android:layout_below="@id/etPasswordReg" />
+
+  <Button
+      android:id="@+id/btnRegisterReg"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:text="Register"
+      android:layout_below="@id/etConfirmPassword" />
+</RelativeLayout>
+
