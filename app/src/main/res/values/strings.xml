@@ -15,4 +15,6 @@
     <string name="games_i_ve_played">Games I\'ve played</string>
     <string name="add_game">add game</string>
     <string name="log_out_of_account">Log out of account</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
