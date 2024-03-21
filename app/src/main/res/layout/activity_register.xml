@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,31 +8,46 @@
 
   <EditText
       android:id="@+id/etUsernameReg"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:hint="Username" />
+      android:hint="Username"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginTop="32dp"
+      android:layout_marginStart="32dp"
+      android:layout_marginEnd="32dp"/>
 
   <EditText
       android:id="@+id/etPasswordReg"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:hint="Password"
       android:inputType="textPassword"
-      android:layout_below="@id/etUsernameReg" />
+      app:layout_constraintTop_toBottomOf="@id/etUsernameReg"
+      app:layout_constraintStart_toStartOf="@id/etUsernameReg"
+      app:layout_constraintEnd_toEndOf="@id/etUsernameReg"
+      android:layout_marginTop="16dp"/>
 
   <EditText
       android:id="@+id/etConfirmPassword"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:hint="Confirm Password"
       android:inputType="textPassword"
-      android:layout_below="@id/etPasswordReg" />
+      app:layout_constraintTop_toBottomOf="@id/etPasswordReg"
+      app:layout_constraintStart_toStartOf="@id/etPasswordReg"
+      app:layout_constraintEnd_toEndOf="@id/etPasswordReg"
+      android:layout_marginTop="16dp"/>
 
   <Button
       android:id="@+id/btnRegisterReg"
-      android:layout_width="match_parent"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:text="Register"
-      android:layout_below="@id/etConfirmPassword" />
-</RelativeLayout>
+      app:layout_constraintTop_toBottomOf="@id/etConfirmPassword"
+      app:layout_constraintStart_toStartOf="@id/etConfirmPassword"
+      app:layout_constraintEnd_toEndOf="@id/etConfirmPassword"
+      android:layout_marginTop="16dp"/>
 
+</androidx.constraintlayout.widget.ConstraintLayout>

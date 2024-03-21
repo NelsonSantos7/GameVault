@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,38 +8,54 @@
 
     <EditText
         android:id="@+id/etUsername"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Username" />
+        android:hint="Username"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"/>
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        android:layout_below="@id/etUsername" />
+        app:layout_constraintTop_toBottomOf="@id/etUsername"
+        app:layout_constraintStart_toStartOf="@id/etUsername"
+        app:layout_constraintEnd_toEndOf="@id/etUsername"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Login"
-        android:layout_below="@id/etPassword" />
+        app:layout_constraintTop_toBottomOf="@id/etPassword"
+        app:layout_constraintStart_toStartOf="@id/etPassword"
+        app:layout_constraintEnd_toEndOf="@id/etPassword"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:layout_below="@id/btnLogin" />
+        app:layout_constraintTop_toBottomOf="@id/btnLogin"
+        app:layout_constraintStart_toStartOf="@id/btnLogin"
+        app:layout_constraintEnd_toEndOf="@id/btnLogin"
+        android:layout_marginTop="16dp"/>
 
     <CheckBox
         android:id="@+id/chkKeepLoggedIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Keep me logged in"
-        android:layout_below="@id/btnRegister"
+        app:layout_constraintTop_toBottomOf="@id/btnRegister"
+        app:layout_constraintStart_toStartOf="@id/btnRegister"
         android:layout_marginTop="16dp"/>
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

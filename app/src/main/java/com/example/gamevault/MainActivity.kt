@@ -4,13 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
@@ -44,8 +45,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // Esta linha garante que o MainActivity escute por seleções de itens no NavigationView.
         navView.setNavigationItemSelectedListener(this)
+
+        val headerView = navView.getHeaderView(0)
+        headerView.findViewById<ImageView>(R.id.imageView).setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            applyNavigationAnimations(R.id.userProfileFragment)
+        }
+    }
+
+    private fun applyNavigationAnimations(destinationId: Int) {
+        val options = NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_right)
+            .setExitAnim(R.anim.slide_out_left)
+            .setPopEnterAnim(R.anim.slide_in_left)
+            .setPopExitAnim(R.anim.slide_out_right)
+            .build()
+        navController.navigate(destinationId, null, options)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -59,18 +75,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val drawerLayout: DrawerLayout = binding.drawerLayout
+        drawerLayout.closeDrawer(GravityCompat.START) // Fechar a barra lateral para todos os itens antes da navegação
         when (item.itemId) {
             R.id.nav_logout -> {
                 logout()
-                drawerLayout.closeDrawer(GravityCompat.START)
+                return true
+            }
+            R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame -> {
+                applyNavigationAnimations(item.itemId)
                 return true
             }
         }
-        val handled = NavigationUI.onNavDestinationSelected(item, navController)
-        if (handled) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
-        return handled
+        return true
     }
 
     private fun logout() {
