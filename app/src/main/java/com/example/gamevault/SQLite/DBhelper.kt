@@ -8,44 +8,48 @@ import android.database.sqlite.SQLiteOpenHelper
 
 class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
-        private const val DATABASE_VERSION = 1
-        private const val DATABASE_NAME = "GameVaultDB"
-
-        // Tabela de Usuários
-        private const val TABLE_USERS = "Usuarios"
-        private const val COLUMN_USER_ID = "id"
-        private const val COLUMN_USERNAME = "username"
-        private const val COLUMN_PASSWORD = "password"
-
-        // Tabela de Jogos
-        private const val TABLE_GAMES = "Jogos"
-        private const val COLUMN_GAME_ID = "game_id"
-        private const val COLUMN_GAME_TITLE = "titulo"
-        private const val COLUMN_GAME_DISTRIBUTOR = "distribuidora"
-        private const val COLUMN_GAME_METACRITIC = "nota_metacritic"
-        private const val COLUMN_GAME_YEAR = "ano_lancamento"
-        private const val COLUMN_GAME_PHOTO = "foto"
-        private const val COLUMN_GAME_TRAILER = "mini_trailer"
-        private const val COLUMN_GAME_SUMMARY = "resumo"
-        private const val COLUMN_GAME_DURATION = "tempo_estimado"
+        const val DATABASE_VERSION = 2
+        const val DATABASE_NAME = "GameVaultDB"
+        const val TABLE_USERS = "Usuarios"
+        const val COLUMN_USER_ID = "id"
+        const val COLUMN_USERNAME = "username"
+        const val COLUMN_EMAIL = "email"
+        const val COLUMN_PASSWORD = "password"
+        const val TABLE_GAMES = "Jogos"
+        const val COLUMN_GAME_ID = "game_id"
+        const val COLUMN_GAME_TITLE = "titulo"
+        const val COLUMN_GAME_DISTRIBUTOR = "distribuidora"
+        const val COLUMN_GAME_METACRITIC = "nota_metacritic"
+        const val COLUMN_GAME_YEAR = "ano_lancamento"
+        const val COLUMN_GAME_PHOTO = "foto"
+        const val COLUMN_GAME_TRAILER = "mini_trailer"
+        const val COLUMN_GAME_SUMMARY = "resumo"
+        const val COLUMN_GAME_DURATION = "tempo_estimado"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val CREATE_USERS_TABLE = ("CREATE TABLE $TABLE_USERS (" +
-                "$COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "$COLUMN_USERNAME TEXT UNIQUE," +
-                "$COLUMN_PASSWORD TEXT)")
+        val CREATE_USERS_TABLE = """
+            CREATE TABLE $TABLE_USERS (
+                $COLUMN_USER_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_USERNAME TEXT UNIQUE,
+                $COLUMN_EMAIL TEXT UNIQUE,
+                $COLUMN_PASSWORD TEXT
+            )
+        """.trimIndent()
 
-        val CREATE_GAMES_TABLE = ("CREATE TABLE $TABLE_GAMES (" +
-                "$COLUMN_GAME_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "$COLUMN_GAME_TITLE TEXT," +
-                "$COLUMN_GAME_DISTRIBUTOR TEXT," +
-                "$COLUMN_GAME_METACRITIC REAL," +
-                "$COLUMN_GAME_YEAR INTEGER," +
-                "$COLUMN_GAME_PHOTO BLOB," +
-                "$COLUMN_GAME_TRAILER TEXT," +
-                "$COLUMN_GAME_SUMMARY TEXT," +
-                "$COLUMN_GAME_DURATION INTEGER)")
+        val CREATE_GAMES_TABLE = """
+            CREATE TABLE $TABLE_GAMES (
+                $COLUMN_GAME_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                $COLUMN_GAME_TITLE TEXT,
+                $COLUMN_GAME_DISTRIBUTOR TEXT,
+                $COLUMN_GAME_METACRITIC REAL,
+                $COLUMN_GAME_YEAR INTEGER,
+                $COLUMN_GAME_PHOTO BLOB,
+                $COLUMN_GAME_TRAILER TEXT,
+                $COLUMN_GAME_SUMMARY TEXT,
+                $COLUMN_GAME_DURATION INTEGER
+            )
+        """.trimIndent()
 
         db.execSQL(CREATE_USERS_TABLE)
         db.execSQL(CREATE_GAMES_TABLE)
@@ -57,48 +61,39 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         onCreate(db)
     }
 
-    // Métodos para gerenciamento de usuários
     fun addUser(user: Usermodel): Long {
-        val db = this.writableDatabase
+        val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_USERNAME, user.username)
+            put(COLUMN_EMAIL, user.email)
             put(COLUMN_PASSWORD, user.password)
         }
         val id = db.insert(TABLE_USERS, null, values)
         db.close()
         return id
     }
-
-    fun updateUser(user: Usermodel): Int {
-        val db = this.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_USERNAME, user.username)
-            put(COLUMN_PASSWORD, user.password)
-        }
-        val result = db.update(TABLE_USERS, values, "$COLUMN_USER_ID = ?", arrayOf(user.id.toString()))
-        db.close()
-        return result
-    }
-
-    fun deleteUser(userId: Int): Int {
-        val db = this.writableDatabase
-        val result = db.delete(TABLE_USERS, "$COLUMN_USER_ID = ?", arrayOf(userId.toString()))
-        db.close()
-        return result
-    }
-
-    fun validateLogin(username: String, password: String): Boolean {
+    fun getUserByUsername(username: String): Cursor {
         val db = this.readableDatabase
-        val cursor = db.query(TABLE_USERS, arrayOf(COLUMN_USER_ID),
-            "$COLUMN_USERNAME = ? AND $COLUMN_PASSWORD = ?", arrayOf(username, password),
-            null, null, null)
-        val isLoggedIn = cursor.moveToFirst()
-        cursor.close()
-        db.close()
-        return isLoggedIn
+        return db.rawQuery("SELECT * FROM $TABLE_USERS WHERE $COLUMN_USERNAME = ?", arrayOf(username))
     }
 
-    // Métodos de Gerenciamento de Jogos
+
+    fun getUserById(userId: Int): Cursor {
+        val db = readableDatabase
+        return db.rawQuery("SELECT * FROM $TABLE_USERS WHERE $COLUMN_USER_ID = ?", arrayOf(userId.toString()))
+    }
+
+    fun updateUserProfile(userId: Int, newUserName: String, newUserEmail: String): Int {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_USERNAME, newUserName)
+            put(COLUMN_EMAIL, newUserEmail)
+        }
+        val success = db.update(TABLE_USERS, values, "$COLUMN_USER_ID = ?", arrayOf(userId.toString()))
+        db.close()
+        return success
+    }
+
     fun addGame(game: Gamemodel): Long {
         val db = this.writableDatabase
         val values = ContentValues().apply {
@@ -111,12 +106,12 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put(COLUMN_GAME_SUMMARY, game.resumo)
             put(COLUMN_GAME_DURATION, game.tempoEstimado)
         }
-        val _id = db.insert(TABLE_GAMES, null, values)
+        val id = db.insert(TABLE_GAMES, null, values)
         db.close()
-        return _id
+        return id
     }
 
-    fun updateGame(game: Gamemodel): Int {
+    fun updateGame(gameId: Int, game: Gamemodel): Int {
         val db = this.writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_GAME_TITLE, game.titulo)
@@ -128,16 +123,16 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             put(COLUMN_GAME_SUMMARY, game.resumo)
             put(COLUMN_GAME_DURATION, game.tempoEstimado)
         }
-        val result = db.update(TABLE_GAMES, values, "$COLUMN_GAME_ID = ?", arrayOf(game.id.toString()))
+        val success = db.update(TABLE_GAMES, values, "$COLUMN_GAME_ID = ?", arrayOf(gameId.toString()))
         db.close()
-        return result
+        return success
     }
 
     fun deleteGame(gameId: Int): Int {
         val db = this.writableDatabase
-        val result = db.delete(TABLE_GAMES, "$COLUMN_GAME_ID = ?", arrayOf(gameId.toString()))
+        val success = db.delete(TABLE_GAMES, "$COLUMN_GAME_ID = ?", arrayOf(gameId.toString()))
         db.close()
-        return result
+        return success
     }
 
     fun getAllGames(): Cursor {
@@ -149,4 +144,30 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM $TABLE_GAMES WHERE $COLUMN_GAME_ID = ?", arrayOf(gameId.toString()))
     }
+
+
+    fun checkUserExists(email: String, username: String): Boolean {
+        val db = readableDatabase
+        val emailQuery = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ?"
+        val usernameQuery = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_USERNAME = ?"
+
+        // Verifica se o e-mail já existe
+        readableDatabase.rawQuery(emailQuery, arrayOf(email)).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return true // E-mail encontrado, usuário já existe
+            }
+        }
+
+        // Verifica se o nome de usuário já existe
+        readableDatabase.rawQuery(usernameQuery, arrayOf(username)).use { cursor ->
+            if (cursor.moveToFirst()) {
+                return true // Nome de usuário encontrado, usuário já existe
+            }
+        }
+
+        return false // Usuário não existe
+    }
+
+
+
 }

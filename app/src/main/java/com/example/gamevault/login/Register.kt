@@ -1,10 +1,10 @@
 package com.example.gamevault.login
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gamevault.SQLite.DBhelper
+import com.example.gamevault.SQLite.Usermodel
 import com.example.gamevault.databinding.ActivityRegisterBinding
 
 class Register : AppCompatActivity() {
@@ -15,56 +15,64 @@ class Register : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        dbHelper = DBhelper(this)
 
-        dbHelper = DBhelper(this) // Inicialize o dbHelper aqui
+        setupListeners()
+    }
 
+    private fun setupListeners() {
         binding.btnRegisterReg.setOnClickListener {
-            registerUser()
+            attemptRegister()
         }
     }
 
-    private fun registerUser() {
-        val username = binding.etUsernameReg.text.toString()
-        val password = binding.etPasswordReg.text.toString()
-        val confirmPassword = binding.etConfirmPassword.text.toString()
+    private fun attemptRegister() {
+        val username = binding.etUsernameReg.text.toString().trim()
+        val email = binding.etEmailReg.text.toString().trim()
+        val password = binding.etPasswordReg.text.toString().trim()
+        val confirmPassword = binding.etConfirmPassword.text.toString().trim()
 
-        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+        // Validation
+        if (!validateInput(username, email, password, confirmPassword)) return
+
+        // Check for existing user
+        if (dbHelper.checkUserExists(email, username)) {
+            showToast("E-mail ou nome de usuário já registrado.")
             return
         }
 
-        // Verifique se as senhas coincidem
-        if (password != confirmPassword) {
-            Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // Attempt to register
+        registerUser(Usermodel(username = username, email = email, password = password))
+    }
 
-        // Verifica se a senha tem pelo menos 5 caracteres e contém pelo menos um caractere especial
-        if (password.length < 5 || !password.contains(Regex("[^A-Za-z0-9]"))) {
-            Toast.makeText(this, "Password must be at least 5 characters long and contain at least one special character", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        if (!checkUserExists(username)) {
-            val contentValues = ContentValues().apply {
-                put("username", username)
-                put("password", password)
+    private fun validateInput(username: String, email: String, password: String, confirmPassword: String): Boolean {
+        return when {
+            username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() -> {
+                showToast("Todos os campos devem ser preenchidos.")
+                false
             }
-            val db = dbHelper.writableDatabase
-            db.insert("Usuarios", null, contentValues)
+            password != confirmPassword -> {
+                showToast("As senhas não coincidem.")
+                false
+            }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                showToast("Forneça um endereço de e-mail válido.")
+                false
+            }
+            else -> true
+        }
+    }
 
-            Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show()
+    private fun registerUser(user: Usermodel) {
+        if (dbHelper.addUser(user) > 0) {
+            showToast("Registro realizado com sucesso.")
             finish()
         } else {
-            Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
+            showToast("Erro ao registrar usuário. Tente novamente.")
         }
     }
 
-    fun checkUserExists(username: String): Boolean {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM Usuarios WHERE username=?", arrayOf(username))
-        val userExists = cursor.count > 0
-        cursor.close()
-        return userExists
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

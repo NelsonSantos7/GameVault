@@ -1,10 +1,14 @@
 package com.example.gamevault
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -18,12 +22,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.gamevault.databinding.ActivityMainBinding
 import com.example.gamevault.login.Login
 import com.google.android.material.navigation.NavigationView
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,16 +41,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navView: NavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_content_main)
 
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame
-            ), drawerLayout
-        )
+        appBarConfiguration = AppBarConfiguration(setOf(
+            R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame
+        ), drawerLayout)
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
         navView.setNavigationItemSelectedListener(this)
+
+        sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE)
+        updateNavHeaderUserInfo()
 
         val headerView = navView.getHeaderView(0)
         headerView.findViewById<ImageView>(R.id.imageView).setOnClickListener {
@@ -53,6 +59,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             applyNavigationAnimations(R.id.userProfileFragment)
         }
     }
+
+    private fun loadProfileImageIntoNavHeader() {
+        val navigationView: NavigationView = findViewById(R.id.nav_view)
+        val headerView = navigationView.getHeaderView(0)
+        val profileImageView: CircleImageView = headerView.findViewById(R.id.imageView)
+
+        val sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
+        val imageUri = sharedPreferences.getString("USER_PROFILE_IMAGE_URI", null)
+        if (imageUri != null) {
+            profileImageView.setImageURI(Uri.parse(imageUri))
+        }
+    }
+
+
+    fun updateNavHeaderUserInfo() {
+        val sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
+        val userName = sharedPreferences.getString("USERNAME", "Usuário Padrão")
+        val userEmail = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
+
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        val headerView = navigationView.getHeaderView(0)
+        val userNameTextView = headerView.findViewById<TextView>(R.id.textViewName)
+        val userEmailTextView = headerView.findViewById<TextView>(R.id.textViewEmail)
+
+        userNameTextView.text = userName
+        userEmailTextView.text = userEmail
+    }
+
 
     private fun applyNavigationAnimations(destinationId: Int) {
         val options = NavOptions.Builder()
@@ -75,28 +109,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val drawerLayout: DrawerLayout = binding.drawerLayout
-        drawerLayout.closeDrawer(GravityCompat.START) // Fechar a barra lateral para todos os itens antes da navegação
+        drawerLayout.closeDrawer(GravityCompat.START)
         when (item.itemId) {
             R.id.nav_logout -> {
                 logout()
                 return true
             }
-            R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame -> {
-                applyNavigationAnimations(item.itemId)
-                return true
-            }
+            else -> applyNavigationAnimations(item.itemId)
         }
         return true
     }
 
     private fun logout() {
-        val sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.clear().apply()
+        sharedPreferences.edit().clear().apply()
         val loginIntent = Intent(this, Login::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
         startActivity(loginIntent)
         finish()
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateNavHeaderUserInfo()
+        loadProfileImageIntoNavHeader()
+    }
+
+
+
+
+
+
 }
