@@ -3,14 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@id/nav_home">
 
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.gamevault.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_nav_home_to_gameDetailsFragment"
+            app:destination="@id/gameDetailsFragment" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/gameDetailsFragment"
+        android:name="com.example.gamevault.ui.GameDetails.GameDetailsFragment"
+        android:label="Game Details"
+        tools:layout="@layout/fragment_game_details" />
+    <!-- Outros fragmentos já existentes -->
 
     <fragment
         android:id="@+id/nav_im_playing"
@@ -27,7 +37,7 @@
     <fragment
         android:id="@+id/nav_Ive_played"
         android:name="com.example.gamevault.ui.IvePlayed.IvePlayedFragment"
-        android:label="IvaPlayed"
+        android:label="IvePlayed"
         tools:layout="@layout/fragment_ive_played" />
 
     <fragment
@@ -41,6 +51,5 @@
         android:name="com.example.gamevault.ui.userProfile.UserProfileFragment"
         android:label="UserProfile"
         tools:layout="@layout/fragment_user_profile" />
-
 
 </navigation>

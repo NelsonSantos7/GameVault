@@ -1,8 +1,10 @@
-package com.example.gamevault.SQLite
+package com.example.gamevault.model
 
 data class Usermodel(
-    var id: Int? = null,
-    var username: String = "",
-    var email: String = "",
-    var password: String = ""
+    val id: Int = 0,
+    val username: String,
+    val email: String,
+    val password: String,
+    val salt: String? = null
+
 )

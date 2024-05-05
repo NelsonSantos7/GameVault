@@ -1,11 +1,11 @@
 package com.example.gamevault.login
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gamevault.SQLite.DBhelper
-import com.example.gamevault.SQLite.Usermodel
 import com.example.gamevault.databinding.ActivityRegisterBinding
+import com.example.gamevault.model.Usermodel
+import com.google.android.material.snackbar.Snackbar
 
 class Register : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -32,47 +32,47 @@ class Register : AppCompatActivity() {
         val password = binding.etPasswordReg.text.toString().trim()
         val confirmPassword = binding.etConfirmPassword.text.toString().trim()
 
-        // Validation
         if (!validateInput(username, email, password, confirmPassword)) return
 
-        // Check for existing user
         if (dbHelper.checkUserExists(email, username)) {
-            showToast("E-mail ou nome de usuário já registrado.")
+            showSnackbar("E-mail ou nome de usuário já registrado.")
             return
         }
 
-        // Attempt to register
-        registerUser(Usermodel(username = username, email = email, password = password))
+        val hashedPassword = hashPassword(password)
+        val user = Usermodel(username = username, email = email, password = hashedPassword)
+
+        if (dbHelper.addUser(user) > 0) {
+            showSnackbar("Registro realizado com sucesso.")
+            finish()
+        } else {
+            showSnackbar("Erro ao registrar usuário. Tente novamente.")
+        }
     }
 
     private fun validateInput(username: String, email: String, password: String, confirmPassword: String): Boolean {
         return when {
             username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() -> {
-                showToast("Todos os campos devem ser preenchidos.")
+                showSnackbar("Todos os campos devem ser preenchidos.")
                 false
             }
             password != confirmPassword -> {
-                showToast("As senhas não coincidem.")
+                showSnackbar("As senhas não coincidem.")
                 false
             }
             !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                showToast("Forneça um endereço de e-mail válido.")
+                showSnackbar("Forneça um endereço de e-mail válido.")
                 false
             }
             else -> true
         }
     }
 
-    private fun registerUser(user: Usermodel) {
-        if (dbHelper.addUser(user) > 0) {
-            showToast("Registro realizado com sucesso.")
-            finish()
-        } else {
-            showToast("Erro ao registrar usuário. Tente novamente.")
-        }
+    private fun showSnackbar(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    private fun hashPassword(password: String): String {
+        return password
     }
 }

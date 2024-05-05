@@ -135,9 +135,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         loadProfileImageIntoNavHeader()
     }
 
-
-
-
-
-
 }

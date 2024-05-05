@@ -9,14 +9,56 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="games_i_m_playing">games I\'m playing</string>
-    <string name="games_i_want_to_play">games I want to play</string>
+    <string name="games_i_m_playing">Games I\'m playing</string>
+    <string name="games_i_want_to_play">Games I want to play</string>
     <string name="games_i_ve_played">Games I\'ve played</string>
-    <string name="add_game">add game</string>
+    <string name="add_game">Add game</string>
     <string name="log_out_of_account">Log out of account</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="menu_user_profile">menu user profile</string>
-    <string name="name">name</string>
-    <string name="profile_image_description">Descrição da imagem de perfil</string>
-    <string name="change_profile_image">Alterar imagem de perfil</string>
+    <string name="menu_user_profile">User profile</string>
+    <string name="name">Name</string>
+    <string name="profile_image_description">Profile image description</string>
+    <string name="change_profile_image">Change profile image</string>
+    <string name="game_title_hint">Game title</string>
+    <string name="game_cover">Game cover</string>
+    <string name="distributor_hint">Distributor</string>
+    <string name="metacritic_score_hint">Metacritic score hint</string>
+    <string name="release_year_hint">Release year</string>
+    <string name="estimated_time_hint">Estimated time</string>
+    <string name="add_photo">Add photo</string>
+    <string name="submit_game">Submit game</string>
+    <string name="game_title">Game title</string>
+    <string name="game_details">Game details</string>
+
+    <string-array name="game_status_options">
+        <item>Want to play</item>
+        <item>Will play</item>
+        <item>Playing</item>
+    </string-array>
+
+    <string-array name="platform_options">
+        <item>Playstation</item>
+        <item>Nintendo</item>
+        <item>PC</item>
+        <item>Xbox</item>
+    </string-array>
+
+    <string name="game_added_success">Game added successfully!</string>
+    <string name="failed_to_add_game">Failed to add game.</string>
+    <string name="estimated_time">Estimated time</string>
+    <string name="distributor">Distributor</string>
+    <string name="release_year">Release year</string>
+    <string name="estimated_time1">Estimated time</string>
+    <string name="description">Description</string>
+    <string name="distributor_format">Distributor: %1$s</string>
+    <string name="release_year_format">Release year: %1$d</string>
+    <string name="estimated_time_format">Estimated time: %1$d hours</string>
+    <string name="platforms_format">Platforms: %1$s</string>
+    <string name="invalid_game_id">Invalid game ID</string>
+    <string name="data_unavailable">Data unavailable</string>
+    <string name="game_description">Description</string>
+    <string name="status_playing">Playing</string>
+    <string name="status_will_play">Will play</string>
+    <string name="status_want_to_play">Want to play</string>
+    <string name="status_unknown">Unknown</string>
 </resources>

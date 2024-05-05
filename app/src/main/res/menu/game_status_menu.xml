@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/option_want_to_play"
+        android:title="Quero Jogar" />
+    <item
+        android:id="@+id/option_will_play"
+        android:title="Vou Jogar" />
+    <item
+        android:id="@+id/option_playing"
+        android:title="Estou Jogando" />
+</menu>
