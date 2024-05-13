@@ -6,6 +6,7 @@ import com.example.gamevault.SQLite.DBhelper
 import com.example.gamevault.databinding.ActivityRegisterBinding
 import com.example.gamevault.model.Usermodel
 import com.google.android.material.snackbar.Snackbar
+import org.mindrot.jbcrypt.BCrypt
 
 class Register : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -39,12 +40,12 @@ class Register : AppCompatActivity() {
             return
         }
 
-        val hashedPassword = hashPassword(password)
+        val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
         val user = Usermodel(username = username, email = email, password = hashedPassword)
 
         if (dbHelper.addUser(user) > 0) {
             showSnackbar("Registro realizado com sucesso.")
-            finish()
+            finish()  // Fecha a atividade e retorna à anterior
         } else {
             showSnackbar("Erro ao registrar usuário. Tente novamente.")
         }
@@ -70,9 +71,5 @@ class Register : AppCompatActivity() {
 
     private fun showSnackbar(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-    }
-
-    private fun hashPassword(password: String): String {
-        return password
     }
 }

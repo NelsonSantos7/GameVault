@@ -1,3 +1,5 @@
+package com.example.gamevault.ui.home
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -20,21 +22,17 @@ class GameAdapter(private val onGameClicked: (Gamemodel) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: GameViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val game = getItem(position)
+        holder.bind(game)
+        holder.itemView.setOnClickListener { onGameClicked(game) }
     }
 
-    class GameViewHolder(
-        private val binding: ItemGameBinding,
-        private val onGameClicked: (Gamemodel) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
-
+    class GameViewHolder(private val binding: ItemGameBinding, onGameClicked: (Gamemodel) -> Unit) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(game: Gamemodel) {
             with(binding) {
                 textViewGameTitle.text = game.titulo
                 imageViewGameCover.loadImage(game.fotoUrl)
-                root.setOnClickListener {
-                    onGameClicked(game)
-                }
             }
         }
 
@@ -43,19 +41,14 @@ class GameAdapter(private val onGameClicked: (Gamemodel) -> Unit) :
                 .load(url)
                 .apply(RequestOptions()
                     .placeholder(R.drawable.ic_image_placeholder)
-                    .error(R.drawable.baseline_error_24)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .error(R.drawable.ic_baseline_error_24)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA))
                 .into(this)
         }
     }
 
     class GameDiffCallback : DiffUtil.ItemCallback<Gamemodel>() {
-        override fun areItemsTheSame(oldItem: Gamemodel, newItem: Gamemodel): Boolean {
-            return oldItem.id == newItem.id
-        }
-
-        override fun areContentsTheSame(oldItem: Gamemodel, newItem: Gamemodel): Boolean {
-            return oldItem == newItem
-        }
+        override fun areItemsTheSame(oldItem: Gamemodel, newItem: Gamemodel): Boolean = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Gamemodel, newItem: Gamemodel): Boolean = oldItem == newItem
     }
 }

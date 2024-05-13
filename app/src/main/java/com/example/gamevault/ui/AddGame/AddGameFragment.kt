@@ -18,6 +18,7 @@ import com.example.gamevault.databinding.FragmentAddGameBinding
 import com.example.gamevault.model.Gamemodel
 import com.yalantis.ucrop.UCrop
 import java.io.File
+import java.util.Calendar
 
 class AddGameFragment : Fragment() {
     private var _binding: FragmentAddGameBinding? = null
@@ -27,7 +28,7 @@ class AddGameFragment : Fragment() {
     private lateinit var selectedPlatforms: BooleanArray
     private lateinit var platformsList: Array<String>
     private var chosenPlatforms: String = ""
-    private var chosenStatus: Int = 0 // Adicione esta linha
+    private var chosenStatus: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentAddGameBinding.inflate(inflater, container, false)
@@ -47,7 +48,9 @@ class AddGameFragment : Fragment() {
             showPlatformDialog()
         }
         binding.buttonSubmitGame.setOnClickListener {
-            submitGame(chosenStatus) // Corrija isso
+            if (validateInput()) {
+                submitGame()
+            }
         }
     }
 
@@ -62,11 +65,10 @@ class AddGameFragment : Fragment() {
 
         binding.spinnerGameStatus.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                chosenStatus = position // Atualiza o status escolhido
+                chosenStatus = position
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Não é necessário fazer nada aqui
             }
         }
     }
@@ -88,8 +90,7 @@ class AddGameFragment : Fragment() {
         chosenPlatforms = platformsList.indices
             .filter { selectedPlatforms[it] }
             .joinToString { platformsList[it] }
-
-        Toast.makeText(requireContext(), "Plataformas selecionadas: $chosenPlatforms", Toast.LENGTH_LONG).show()
+        binding.textViewSelectedPlatforms.text = "Plataformas selecionadas: $chosenPlatforms"
     }
 
     private fun pickImageFromGallery() {
@@ -117,22 +118,39 @@ class AddGameFragment : Fragment() {
             .start(requireContext(), this)
     }
 
-    private fun submitGame(status: Int) { // Adicione o parâmetro 'status' aqui
+    private fun validateInput(): Boolean {
+        if (binding.editTextGameTitle.text.toString().trim().isEmpty()) {
+            Toast.makeText(requireContext(), "Por favor, insira um título para o jogo.", Toast.LENGTH_SHORT).show()
+            return false
+        }
         if (chosenPlatforms.isBlank()) {
             Toast.makeText(requireContext(), "Por favor, selecione pelo menos uma plataforma.", Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val yearInput = binding.editTextGameYear.text.toString().toIntOrNull()
+        if (yearInput == null || yearInput < 1980 || yearInput > currentYear) {
+            Toast.makeText(requireContext(), "Insira um ano de lançamento válido (1980 - $currentYear).", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if ((binding.editTextGameDuration.text.toString().toIntOrNull() ?: 0) <= 0) {
+            Toast.makeText(requireContext(), "Por favor, insira uma duração estimada válida em horas.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
 
+    private fun submitGame() {
         val game = Gamemodel(
             titulo = binding.editTextGameTitle.text.toString().trim(),
             distribuidora = binding.editTextGameDistributor.text.toString().trim(),
-            anoLancamento = binding.editTextGameYear.text.toString().toIntOrNull() ?: 0,
+            anoLancamento = binding.editTextGameYear.text.toString().toInt(),
             fotoUrl = imageUri?.toString() ?: "",
             plataformas = chosenPlatforms,
             miniTrailer = "",
-            resumo = "",
-            tempoEstimado = binding.editTextGameDuration.text.toString().toIntOrNull() ?: 0,
-            status = status // Passa o valor do status aqui
+            resumo = binding.editTextGameDescription.text.toString().trim(),
+            tempoEstimado = binding.editTextGameDuration.text.toString().toInt(),
+            status = chosenStatus
         )
 
         val id = databaseHelper.addGame(game)
@@ -149,8 +167,11 @@ class AddGameFragment : Fragment() {
         binding.editTextGameDistributor.setText("")
         binding.editTextGameYear.setText("")
         binding.editTextGameDuration.setText("")
-        binding.imageViewGameCover.setImageResource(R.mipmap.ic_launcher)
+        binding.editTextGameDescription.setText("")
+        binding.imageViewGameCover.setImageResource(R.drawable.ic_launcher_background)
         selectedPlatforms.fill(false)
+        chosenPlatforms = ""
+        binding.textViewSelectedPlatforms.text = ""
     }
 
     override fun onDestroyView() {

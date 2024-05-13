@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.gamevault.ui.home.HomeFragment"
+        android:name="com.example.gamevault.ui.home.HomeFragment1"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_home1">
         <action
             android:id="@+id/action_nav_home_to_gameDetailsFragment"
             app:destination="@id/gameDetailsFragment" />
@@ -20,7 +20,6 @@
         android:name="com.example.gamevault.ui.GameDetails.GameDetailsFragment"
         android:label="Game Details"
         tools:layout="@layout/fragment_game_details" />
-    <!-- Outros fragmentos já existentes -->
 
     <fragment
         android:id="@+id/nav_im_playing"

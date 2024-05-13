@@ -1,6 +1,5 @@
 package com.example.gamevault
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
@@ -34,7 +33,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.appBarMain.toolbar)
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
@@ -47,11 +45,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
         navView.setNavigationItemSelectedListener(this)
 
         sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE)
-        updateNavHeaderUserInfo()
+        updateNavHeader()
 
         val headerView = navView.getHeaderView(0)
         headerView.findViewById<ImageView>(R.id.imageView).setOnClickListener {
@@ -60,33 +57,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun loadProfileImageIntoNavHeader() {
-        val navigationView: NavigationView = findViewById(R.id.nav_view)
-        val headerView = navigationView.getHeaderView(0)
-        val profileImageView: CircleImageView = headerView.findViewById(R.id.imageView)
-
-        val sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
-        val imageUri = sharedPreferences.getString("USER_PROFILE_IMAGE_URI", null)
-        if (imageUri != null) {
-            profileImageView.setImageURI(Uri.parse(imageUri))
-        }
-    }
-
-
-    fun updateNavHeaderUserInfo() {
-        val sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
-        val userName = sharedPreferences.getString("USERNAME", "Usuário Padrão")
-        val userEmail = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
-
+    fun updateNavHeader() {
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         val headerView = navigationView.getHeaderView(0)
         val userNameTextView = headerView.findViewById<TextView>(R.id.textViewName)
         val userEmailTextView = headerView.findViewById<TextView>(R.id.textViewEmail)
+        val profileImageView: CircleImageView = headerView.findViewById(R.id.imageView)
+
+        val userName = sharedPreferences.getString("USERNAME", "Usuário Padrão")
+        val userEmail = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
+        val imageUri = sharedPreferences.getString("USER_PROFILE_IMAGE_URI", null)
 
         userNameTextView.text = userName
         userEmailTextView.text = userEmail
+        if (imageUri != null) {
+            profileImageView.setImageURI(Uri.parse(imageUri))
+        }
     }
-
 
     private fun applyNavigationAnimations(destinationId: Int) {
         val options = NavOptions.Builder()
@@ -115,7 +102,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 logout()
                 return true
             }
-            else -> applyNavigationAnimations(item.itemId)
+            else -> {
+                applyNavigationAnimations(item.itemId)
+            }
         }
         return true
     }
@@ -131,8 +120,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
-        updateNavHeaderUserInfo()
-        loadProfileImageIntoNavHeader()
+        updateNavHeader()
     }
-
 }

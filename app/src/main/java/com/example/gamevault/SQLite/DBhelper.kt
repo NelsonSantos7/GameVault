@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.gamevault.model.Gamemodel
@@ -16,17 +17,14 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "GameVaultDB.db"
 
-        // Tables
         const val TABLE_USERS = "Usuarios"
         const val TABLE_GAMES = "Jogos"
 
-        // Columns for table Usuarios
         const val COLUMN_USER_ID = "id"
         const val COLUMN_USERNAME = "username"
         const val COLUMN_EMAIL = "email"
         const val COLUMN_PASSWORD = "password"
 
-        // Columns for table Jogos
         const val COLUMN_GAME_ID = "game_id"
         const val COLUMN_GAME_TITLE = "titulo"
         const val COLUMN_GAME_DISTRIBUTOR = "distribuidora"
@@ -47,6 +45,8 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                     "$COLUMN_EMAIL TEXT UNIQUE," +
                     "$COLUMN_PASSWORD TEXT)"
         )
+        db.execSQL("CREATE INDEX idx_username ON $TABLE_USERS($COLUMN_USERNAME)")
+        db.execSQL("CREATE INDEX idx_email ON $TABLE_USERS($COLUMN_EMAIL)")
 
         db.execSQL(
             "CREATE TABLE $TABLE_GAMES (" +
@@ -61,25 +61,16 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                     "$COLUMN_GAME_PLATFORMS TEXT," +
                     "$COLUMN_GAME_STATUS INTEGER)"
         )
+        db.execSQL("CREATE INDEX idx_game_title ON $TABLE_GAMES($COLUMN_GAME_TITLE)")
+        db.execSQL("CREATE INDEX idx_distributor ON $TABLE_GAMES($COLUMN_GAME_DISTRIBUTOR)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_GAMES")
-        onCreate(db)
-    }
-
-    fun addUser(user: Usermodel): Long {
-        return writableDatabase.use { db ->
-            ContentValues().apply {
-                put(COLUMN_USERNAME, user.username)
-                put(COLUMN_EMAIL, user.email)
-                put(COLUMN_PASSWORD, BCrypt.hashpw(user.password, BCrypt.gensalt()))
-            }.let { values ->
-                db.insert(TABLE_USERS, null, values)
-            }
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE $TABLE_USERS ADD COLUMN nova_coluna TEXT DEFAULT 'valor_default'")
         }
     }
+
 
     fun getUserByUsername(username: String): Usermodel? {
         return readableDatabase.use { db ->
@@ -104,41 +95,41 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         }
     }
 
-    fun checkUserExists(email: String, username: String): Boolean {
-        return readableDatabase.use { db ->
-            val columns = arrayOf(COLUMN_USER_ID)
-            val selection = "$COLUMN_EMAIL = ? OR $COLUMN_USERNAME = ?"
-            val selectionArgs = arrayOf(email, username)
-            db.query(TABLE_USERS, columns, selection, selectionArgs, null, null, null).use { cursor ->
-                cursor.moveToFirst() && cursor.count > 0
+
+    fun addUser(user: Usermodel): Long {
+        val db = writableDatabase
+        var id: Long = -1
+        try {
+            val values = ContentValues().apply {
+                put(COLUMN_USERNAME, user.username)
+                put(COLUMN_EMAIL, user.email)
+                put(COLUMN_PASSWORD, user.password)
             }
+            id = db.insert(TABLE_USERS, null, values)
+        } catch (e: Exception) {
+            Log.e("DBhelper", "Erro ao adicionar usuário", e)
+        } finally {
+            db.close()
         }
+        return id
     }
 
-    fun checkPasswordHash(username: String, plainPassword: String): Boolean {
-        return readableDatabase.use { db ->
-            val cursor = db.query(
-                TABLE_USERS,
-                arrayOf(COLUMN_PASSWORD),
-                "$COLUMN_USERNAME = ?",
-                arrayOf(username),
-                null, null, null
-            )
+    fun checkUserExists(email: String, username: String): Boolean {
+        val db = readableDatabase
+        val query = "SELECT * FROM $TABLE_USERS WHERE $COLUMN_EMAIL = ? OR $COLUMN_USERNAME = ?"
+        db.rawQuery(query, arrayOf(email, username)).use { cursor ->
             if (cursor.moveToFirst()) {
-                val storedPasswordHash = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD))
-                cursor.close()
-                return BCrypt.checkpw(plainPassword, storedPasswordHash)
+                return true
             }
-            cursor.close()
-            return false
         }
+        return false
     }
 
     fun addGame(game: Gamemodel): Long {
         return writableDatabase.use { db ->
             db.beginTransaction()
             try {
-                val values = ContentValues().apply {
+                ContentValues().apply {
                     put(COLUMN_GAME_TITLE, game.titulo)
                     put(COLUMN_GAME_DISTRIBUTOR, game.distribuidora)
                     put(COLUMN_GAME_YEAR, game.anoLancamento)
@@ -148,15 +139,45 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                     put(COLUMN_GAME_DURATION, game.tempoEstimado)
                     put(COLUMN_GAME_PLATFORMS, game.plataformas)
                     put(COLUMN_GAME_STATUS, game.status)
+                }.let { values ->
+                    val result = db.insert(TABLE_GAMES, null, values)
+                    db.setTransactionSuccessful()
+                    result
                 }
-                val result = db.insert(TABLE_GAMES, null, values)
-                db.setTransactionSuccessful()
-                result
             } finally {
                 db.endTransaction()
             }
         }
     }
+
+    fun checkPasswordHash(username: String, plainPassword: String): Boolean {
+        return try {
+            readableDatabase.use { db ->
+                db.query(
+                    TABLE_USERS,
+                    arrayOf(COLUMN_PASSWORD),
+                    "$COLUMN_USERNAME = ?",
+                    arrayOf(username),
+                    null, null, null
+                ).use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        val storedPasswordHash = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD))
+                        BCrypt.checkpw(plainPassword, storedPasswordHash).also {
+                            Log.d("CheckPassword", "Password verification result: $it")
+                        }
+                    } else {
+                        Log.d("CheckPassword", "No such user found")
+                        false
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("CheckPassword", "Error checking password hash: ${e.message}")
+            false
+        }
+    }
+
+
 
     fun getAllGames(): List<Gamemodel> {
         return readableDatabase.use { db ->
@@ -185,6 +206,7 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         return gamesLiveData
     }
 
+
     fun getGameById(gameId: Int): Gamemodel? {
         return readableDatabase.use { db ->
             db.query(
@@ -192,10 +214,28 @@ class DBhelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
                 null,
                 "$COLUMN_GAME_ID = ?",
                 arrayOf(gameId.toString()),
-                null, null, null
+                null,
+                null,
+                null
             ).use { cursor ->
                 if (cursor.moveToFirst()) Gamemodel.fromCursor(cursor) else null
             }
+        }
+    }
+
+    fun updateGame(game: Gamemodel): Int {
+        return writableDatabase.use { db ->
+            ContentValues().apply {
+                put(COLUMN_GAME_TITLE, game.titulo)
+            }.let { values ->
+                db.update(TABLE_GAMES, values, "$COLUMN_GAME_ID = ?", arrayOf(game.id.toString()))
+            }
+        }
+    }
+
+    fun deleteGame(game: Gamemodel): Int {
+        return writableDatabase.use { db ->
+            db.delete(TABLE_GAMES, "$COLUMN_GAME_ID = ?", arrayOf(game.id.toString()))
         }
     }
 }

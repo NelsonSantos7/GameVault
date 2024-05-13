@@ -26,15 +26,20 @@ class UserProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Carregar a imagem do perfil ao abrir o fragmento
         loadImageProfile()
+        setupUserProfile()
+        setupImagePickerListener()
+    }
 
+    private fun setupUserProfile() {
         val sharedPreferences = activity?.getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
         val userName = sharedPreferences?.getString("USERNAME", "Nome não disponível")
         val userEmail = sharedPreferences?.getString("USER_EMAIL", "Email não disponível")
         binding.userProfileName.text = userName
         binding.userProfileEmail.text = userEmail
+    }
 
+    private fun setupImagePickerListener() {
         binding.userProfileImage.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(intent, REQUEST_IMAGE_PICK)
@@ -44,29 +49,24 @@ class UserProfileFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IMAGE_PICK && resultCode == RESULT_OK) {
-            val selectedImageUri = data?.data
-            selectedImageUri?.let { uri ->
+            data?.data?.let { uri ->
                 startCrop(uri)
             }
         } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
-            val resultUri = UCrop.getOutput(data!!)
-            binding.userProfileImage.setImageURI(resultUri)
-
-            // Salvar a URI recortada no perfil do usuário
-            saveImageProfileUri(resultUri.toString())
+            UCrop.getOutput(data!!)?.let { resultUri ->
+                binding.userProfileImage.setImageURI(resultUri)
+                saveImageProfileUri(resultUri.toString())
+            }
         }
     }
 
     private fun saveImageProfileUri(imageUri: String) {
-        val sharedPreferences = activity?.getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
-        sharedPreferences?.edit()?.putString("USER_PROFILE_IMAGE_URI", imageUri)?.apply()
+        activity?.getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)?.edit()?.putString("USER_PROFILE_IMAGE_URI", imageUri)?.apply()
     }
 
     private fun loadImageProfile() {
-        val sharedPreferences = activity?.getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
-        val imageUri = sharedPreferences?.getString("USER_PROFILE_IMAGE_URI", null)
-        if (imageUri != null) {
-            binding.userProfileImage.setImageURI(Uri.parse(imageUri))
+        activity?.getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)?.getString("USER_PROFILE_IMAGE_URI", null)?.let {
+            binding.userProfileImage.setImageURI(Uri.parse(it))
         }
     }
 
@@ -84,7 +84,5 @@ class UserProfileFragment : Fragment() {
 
     companion object {
         private const val REQUEST_IMAGE_PICK = 1000
-        private const val REQUEST_CROP = UCrop.REQUEST_CROP
     }
 }
-

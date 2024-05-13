@@ -61,4 +61,15 @@
     <string name="status_will_play">Will play</string>
     <string name="status_want_to_play">Want to play</string>
     <string name="status_unknown">Unknown</string>
+    <string name="game_cover_description">game cover description</string>
+    <string name="game_status">game status</string>
+    <string name="game_platforms">game platforms</string>
+    <string name="game_estimated_time">game estimated time</string>
+    <string name="game_release_year">game release year</string>
+    <string name="game_distributor">game distributor</string>
+    <string name="game_year">game year</string>
+    <string name="game_duration">game duration</string>
+    <string name="selected_platforms">selected platforms</string>
+    <string name="select_platforms">select platforms</string>
+    <string name="menu_game_details" />
 </resources>

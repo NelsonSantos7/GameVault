@@ -1,138 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:focusableInTouchMode="true">
 
-        <!-- Guideline para definir uma margem consistente à direita -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_end="16dp" />
-
-        <!-- Guideline para definir uma margem consistente à esquerda -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp" />
-
-        <!-- Título do Jogo -->
         <EditText
             android:id="@+id/editTextGameTitle"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="game title"
-            android:inputType="textCapWords"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:hint="@string/game_title"
+            android:inputType="textCapSentences" />
 
-        <!-- Distribuidora -->
         <EditText
             android:id="@+id/editTextGameDistributor"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_description"
-            android:inputType="textCapWords|textMultiLine"
-            android:minLines="3"
-            android:maxLines="5"
-            android:gravity="top|start"
-            android:scrollbars="vertical"
-            android:overScrollMode="always"
-            app:layout_constraintTop_toBottomOf="@id/editTextGameTitle"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:hint="@string/game_distributor"
+            android:inputType="textCapSentences" />
 
-
-        <!-- Ano de Lançamento -->
         <EditText
             android:id="@+id/editTextGameYear"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/release_year"
-            android:inputType="number"
-            app:layout_constraintTop_toBottomOf="@id/editTextGameDistributor"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:hint="@string/game_year"
+            android:inputType="number" />
 
-        <!-- Tempo Estimado -->
         <EditText
             android:id="@+id/editTextGameDuration"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/estimated_time1"
-            android:inputType="numberDecimal"
-            app:layout_constraintTop_toBottomOf="@id/editTextGameYear"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:hint="@string/game_duration"
+            android:inputType="number" />
 
-        <!-- Seção de Status -->
-        <TextView
-            android:id="@+id/statusLabel"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/editTextGameDescription"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Status do Jogo"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintTop_toBottomOf="@id/editTextGameDuration" />
+            android:hint="@string/game_description"
+            android:inputType="textMultiLine" />
+
+        <TextView
+            android:id="@+id/textViewSelectedPlatforms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/selected_platforms"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <Spinner
             android:id="@+id/spinnerGameStatus"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:entries="@array/game_status_options"
-            app:layout_constraintTop_toBottomOf="@id/statusLabel"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-        <!-- Botões e Imagem -->
         <ImageView
             android:id="@+id/imageViewGameCover"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:contentDescription="@string/game_cover"
-            android:src="@mipmap/ic_launcher"
-            app:layout_constraintTop_toBottomOf="@id/spinnerGameStatus"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background" />
 
         <Button
             android:id="@+id/buttonAddPhoto"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_photo"
-            app:layout_constraintTop_toBottomOf="@id/imageViewGameCover"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:text="@string/add_photo" />
 
         <Button
             android:id="@+id/buttonSubmitGame"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/purple_700"
-            android:text="@string/submit_game"
-            app:layout_constraintTop_toBottomOf="@id/buttonAddPhoto"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight" />
+            android:text="@string/submit_game" />
 
-        <!-- Botão para Seleção de Plataformas -->
         <Button
             android:id="@+id/buttonSelectPlatforms"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Selecionar Plataformas"
-            app:layout_constraintTop_toBottomOf="@id/buttonSubmitGame"
-            app:layout_constraintStart_toStartOf="@id/guidelineLeft"
-            app:layout_constraintEnd_toEndOf="@id/guidelineRight"
-            android:layout_marginTop="16dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:text="@string/select_platforms" />
+    </LinearLayout>
 </ScrollView>

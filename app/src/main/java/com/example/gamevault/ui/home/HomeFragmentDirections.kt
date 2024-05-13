@@ -1,51 +1,26 @@
+package com.example.gamevault.ui.home
+
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.gamevault.databinding.FragmentHomeBinding
-import com.example.gamevault.model.Gamemodel
+import androidx.navigation.NavDirections
+import com.example.gamevault.R
 
-class HomeFragmentDirections : Fragment() {
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel: HomeViewModel by viewModels()
+object HomeFragmentDirections {
+    private const val ARG_GAME_ID = "game_id"
+    private const val ARG_GAME_TITLE = "game_title"
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    fun actionNavHomeToGameDetailsFragment(gameId: Int, gameTitle: String): NavDirections {
+        require(gameId > 0) { "Game ID must be positive. Provided ID: $gameId" }
+        require(gameTitle.isNotEmpty()) { "Game title cannot be empty." }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
-        observeViewModel()
-    }
+        return object : NavDirections {
+            override val actionId: Int
+                get() = R.id.action_nav_home_to_gameDetailsFragment
 
-    private fun setupRecyclerView() {
-        val adapter = GameAdapter { game ->
-            game.id?.let { gameId ->
-                val action = HomeFragmentDirections.actionNavHomeToGameDetailsFragment(gameId, game.titulo)
-                findNavController().navigate(action)
-            }
+            override val arguments: Bundle
+                get() = Bundle().apply {
+                    putInt(ARG_GAME_ID, gameId)
+                    putString(ARG_GAME_TITLE, gameTitle)
+                }
         }
-        binding.gamesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            this.adapter = adapter
-        }
-    }
-
-    private fun observeViewModel() {
-        viewModel.games.observe(viewLifecycleOwner) { games ->
-            (binding.gamesRecyclerView.adapter as? GameAdapter)?.submitList(games)
-        }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
