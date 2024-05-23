@@ -21,8 +21,7 @@
             android:id="@+id/imageView"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:src="@drawable/baseline_person_outline_24"
-            />
+            android:src="@drawable/baseline_person_outline_24" />
 
         <ImageView
             android:layout_width="22dp"
@@ -30,7 +29,6 @@
             android:layout_gravity="top|end"
             android:layout_marginEnd="-1dp"
             android:layout_marginBottom="-1dp"
-
             android:src="@drawable/baseline_edit_square_24" />
     </FrameLayout>
 

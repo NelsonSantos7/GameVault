@@ -3,24 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="8dp">
 
     <ImageView
         android:id="@+id/imageViewGameCover"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/game_cover"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_game_placeholder" />
 
     <TextView
         android:id="@+id/textViewGameTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/imageViewGameCover"
-        android:layout_marginTop="8dp"
-        android:text="@string/game_title" />
+        android:layout_marginStart="16dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintStart_toEndOf="@id/imageViewGameCover"
+        app:layout_constraintTop_toTopOf="@id/imageViewGameCover"
+        app:layout_constraintBottom_toBottomOf="@id/imageViewGameCover"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Título do Jogo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

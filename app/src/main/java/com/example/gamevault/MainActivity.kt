@@ -19,6 +19,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.gamevault.databinding.ActivityMainBinding
+import com.example.gamevault.firebase.FirebaseHelper
 import com.example.gamevault.login.Login
 import com.google.android.material.navigation.NavigationView
 import de.hdodenhof.circleimageview.CircleImageView
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var firebaseHelper: FirebaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,39 +41,40 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navView: NavigationView = binding.navView
         navController = findNavController(R.id.nav_host_fragment_content_main)
 
-        appBarConfiguration = AppBarConfiguration(setOf(
-            R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame
-        ), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame
+            ), drawerLayout
+        )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
         sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE)
-        updateNavHeader()
+        firebaseHelper = FirebaseHelper()
 
-        val headerView = navView.getHeaderView(0)
-        headerView.findViewById<ImageView>(R.id.imageView).setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.START)
-            applyNavigationAnimations(R.id.userProfileFragment)
-        }
+        updateNavHeader()
+        setupProfileImageClickListener()
     }
 
-    fun updateNavHeader() {
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        val headerView = navigationView.getHeaderView(0)
+    private fun updateNavHeader() {
+        val headerView = binding.navView.getHeaderView(0)
         val userNameTextView = headerView.findViewById<TextView>(R.id.textViewName)
         val userEmailTextView = headerView.findViewById<TextView>(R.id.textViewEmail)
         val profileImageView: CircleImageView = headerView.findViewById(R.id.imageView)
 
-        val userName = sharedPreferences.getString("USERNAME", "Usuário Padrão")
-        val userEmail = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
-        val imageUri = sharedPreferences.getString("USER_PROFILE_IMAGE_URI", null)
+        userNameTextView.text = sharedPreferences.getString("USERNAME", "Usuário Padrão")
+        userEmailTextView.text = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
+        sharedPreferences.getString("USER_PROFILE_IMAGE_URI", null)?.let {
+            profileImageView.setImageURI(Uri.parse(it))
+        }
+    }
 
-        userNameTextView.text = userName
-        userEmailTextView.text = userEmail
-        if (imageUri != null) {
-            profileImageView.setImageURI(Uri.parse(imageUri))
+    private fun setupProfileImageClickListener() {
+        binding.navView.getHeaderView(0).findViewById<ImageView>(R.id.imageView).setOnClickListener {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            applyNavigationAnimations(R.id.userProfileFragment)
         }
     }
 
@@ -95,21 +98,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        drawerLayout.closeDrawer(GravityCompat.START)
-        when (item.itemId) {
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        return when (item.itemId) {
             R.id.nav_logout -> {
                 logout()
-                return true
+                true
             }
             else -> {
                 applyNavigationAnimations(item.itemId)
+                true
             }
         }
-        return true
     }
 
     private fun logout() {
+        firebaseHelper.logoutUser()
         sharedPreferences.edit().clear().apply()
         val loginIntent = Intent(this, Login::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

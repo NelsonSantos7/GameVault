@@ -11,28 +11,24 @@
         <item
             android:id="@+id/nav_im_playing"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/games_i_m_playing" />
+            android:title="@string/jogando" />
         <item
             android:id="@+id/nav_want_to_playing"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/games_i_want_to_play" />
-
+            android:title="@string/quero_jogar" />
         <item
             android:id="@+id/nav_Ive_played"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/games_i_ve_played" />
-
+            android:title="@string/joguei" />
         <item
             android:id="@+id/nav_AddGame"
             android:icon="@drawable/baseline_games_24"
-            android:title="@string/add_game" />
+            android:title="@string/adicionar_jogo" />
     </group>
     <group android:id="@+id/group_logout">
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/baseline_logout_24"
-            android:title="@string/log_out_of_account" />
+            android:title="@string/sair" />
     </group>
-
-
 </menu>

@@ -7,11 +7,11 @@
     tools:context=".login.Register">
 
   <EditText
-      android:id="@+id/etUsernameReg"
+      android:id="@+id/editTextUsername"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:hint="Username"
-      android:contentDescription="Field to enter username"
+      android:hint="Usuário"
+      android:contentDescription="Campo para usuário"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
@@ -20,13 +20,13 @@
       android:layout_marginEnd="32dp"/>
 
   <EditText
-      android:id="@+id/etEmailReg"
+      android:id="@+id/editTextEmail"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:hint="Email"
-      android:contentDescription="Field to enter email address"
+      android:hint="E-mail"
+      android:contentDescription="Campo para e-mail"
       android:inputType="textEmailAddress"
-      app:layout_constraintTop_toBottomOf="@id/etUsernameReg"
+      app:layout_constraintTop_toBottomOf="@id/editTextUsername"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       android:layout_marginTop="16dp"
@@ -34,37 +34,25 @@
       android:layout_marginEnd="32dp"/>
 
   <EditText
-      android:id="@+id/etPasswordReg"
+      android:id="@+id/editTextPassword"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:hint="Password"
-      android:contentDescription="Field to enter password"
+      android:hint="Senha"
+      android:contentDescription="Campo para senha"
       android:inputType="textPassword"
-      app:layout_constraintTop_toBottomOf="@id/etEmailReg"
-      app:layout_constraintStart_toStartOf="@id/etEmailReg"
-      app:layout_constraintEnd_toEndOf="@id/etEmailReg"
-      android:layout_marginTop="16dp"/>
-
-  <EditText
-      android:id="@+id/etConfirmPassword"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:hint="Confirm Password"
-      android:contentDescription="Field to confirm password"
-      android:inputType="textPassword"
-      app:layout_constraintTop_toBottomOf="@id/etPasswordReg"
-      app:layout_constraintStart_toStartOf="@id/etPasswordReg"
-      app:layout_constraintEnd_toEndOf="@id/etPasswordReg"
+      app:layout_constraintTop_toBottomOf="@id/editTextEmail"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
       android:layout_marginTop="16dp"/>
 
   <Button
-      android:id="@+id/btnRegisterReg"
+      android:id="@+id/buttonRegister"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:text="Register"
-      android:contentDescription="Button to register the account"
-      app:layout_constraintTop_toBottomOf="@id/etConfirmPassword"
-      app:layout_constraintStart_toStartOf="@id/etConfirmPassword"
-      app:layout_constraintEnd_toEndOf="@id/etConfirmPassword"
+      android:text="Registrar"
+      android:contentDescription="Botão para registrar"
+      app:layout_constraintTop_toBottomOf="@id/editTextPassword"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
       android:layout_marginTop="16dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

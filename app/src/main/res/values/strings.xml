@@ -1,75 +1,81 @@
 <resources>
     <string name="app_name">GameVault</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="games_i_m_playing">Games I\'m playing</string>
-    <string name="games_i_want_to_play">Games I want to play</string>
-    <string name="games_i_ve_played">Games I\'ve played</string>
-    <string name="add_game">Add game</string>
-    <string name="log_out_of_account">Log out of account</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="menu_user_profile">User profile</string>
-    <string name="name">Name</string>
-    <string name="profile_image_description">Profile image description</string>
-    <string name="change_profile_image">Change profile image</string>
-    <string name="game_title_hint">Game title</string>
-    <string name="game_cover">Game cover</string>
-    <string name="distributor_hint">Distributor</string>
-    <string name="metacritic_score_hint">Metacritic score hint</string>
-    <string name="release_year_hint">Release year</string>
-    <string name="estimated_time_hint">Estimated time</string>
-    <string name="add_photo">Add photo</string>
-    <string name="submit_game">Submit game</string>
-    <string name="game_title">Game title</string>
-    <string name="game_details">Game details</string>
+    <string name="navigation_drawer_open">Abrir menu</string>
+    <string name="navigation_drawer_close">Fechar menu</string>
+    <string name="nav_header_title">GameVault</string>
+    <string name="nav_header_subtitle">usuario@gamevault.com</string>
+    <string name="nav_header_desc">Cabeçalho de navegação</string>
+    <string name="action_settings">Configurações</string>
+    <string name="menu_home">Início</string>
+    <string name="menu_gallery">Galeria</string>
+    <string name="menu_slideshow">Apresentação</string>
+    <string name="games_i_m_playing">Em Progresso</string>
+    <string name="games_i_want_to_play">Na Lista</string>
+    <string name="games_i_ve_played">Finalizado</string>
+    <string name="add_game">Adicionar Jogo</string>
+    <string name="log_out_of_account">Sair</string>
+    <string name="hello_blank_fragment">Olá, fragmento vazio</string>
+    <string name="menu_user_profile">Perfil do Usuário</string>
+    <string name="name">Nome</string>
+    <string name="profile_image_description">Descrição da imagem de perfil</string>
+    <string name="change_profile_image">Alterar imagem de perfil</string>
+    <string name="game_title_hint">Título do jogo</string>
+    <string name="game_cover">Capa do jogo</string>
+    <string name="distributor_hint">Distribuidora</string>
+    <string name="metacritic_score_hint">Pontuação Metacritic</string>
+    <string name="release_year_hint">Ano de lançamento</string>
+    <string name="estimated_time_hint">Tempo estimado</string>
+    <string name="add_photo">Adicionar foto</string>
+    <string name="submit_game">Enviar jogo</string>
+    <string name="game_title">Título do jogo</string>
+    <string name="game_details">Detalhes do jogo</string>
 
     <string-array name="game_status_options">
-        <item>Want to play</item>
-        <item>Will play</item>
-        <item>Playing</item>
+        <item>Em Progresso</item>
+        <item>Na Lista</item>
+        <item>Finalizado</item>
     </string-array>
 
     <string-array name="platform_options">
-        <item>Playstation</item>
+        <item>PlayStation</item>
         <item>Nintendo</item>
         <item>PC</item>
         <item>Xbox</item>
     </string-array>
 
-    <string name="game_added_success">Game added successfully!</string>
-    <string name="failed_to_add_game">Failed to add game.</string>
-    <string name="estimated_time">Estimated time</string>
-    <string name="distributor">Distributor</string>
-    <string name="release_year">Release year</string>
-    <string name="estimated_time1">Estimated time</string>
-    <string name="description">Description</string>
-    <string name="distributor_format">Distributor: %1$s</string>
-    <string name="release_year_format">Release year: %1$d</string>
-    <string name="estimated_time_format">Estimated time: %1$d hours</string>
-    <string name="platforms_format">Platforms: %1$s</string>
-    <string name="invalid_game_id">Invalid game ID</string>
-    <string name="data_unavailable">Data unavailable</string>
-    <string name="game_description">Description</string>
-    <string name="status_playing">Playing</string>
-    <string name="status_will_play">Will play</string>
-    <string name="status_want_to_play">Want to play</string>
-    <string name="status_unknown">Unknown</string>
-    <string name="game_cover_description">game cover description</string>
-    <string name="game_status">game status</string>
-    <string name="game_platforms">game platforms</string>
-    <string name="game_estimated_time">game estimated time</string>
-    <string name="game_release_year">game release year</string>
-    <string name="game_distributor">game distributor</string>
-    <string name="game_year">game year</string>
-    <string name="game_duration">game duration</string>
-    <string name="selected_platforms">selected platforms</string>
-    <string name="select_platforms">select platforms</string>
-    <string name="menu_game_details" />
+    <string name="game_added_success">Jogo adicionado com sucesso!</string>
+    <string name="failed_to_add_game">Falha ao adicionar jogo.</string>
+    <string name="estimated_time">Tempo estimado</string>
+    <string name="distributor">Distribuidora</string>
+    <string name="release_year">Ano de lançamento</string>
+    <string name="estimated_time1">Tempo estimado</string>
+    <string name="description">Descrição</string>
+    <string name="distributor_format">Distribuidora: %1$s</string>
+    <string name="release_year_format">Ano: %1$d</string>
+    <string name="estimated_time_format">Tempo: %1$d horas</string>
+    <string name="platforms_format">Plataformas: %1$s</string>
+    <string name="invalid_game_id">ID de jogo inválido</string>
+    <string name="data_unavailable">Dados indisponíveis</string>
+    <string name="game_description">Descrição</string>
+    <string name="status_playing">Em Progresso</string>
+    <string name="status_will_play">Na Lista</string>
+    <string name="status_want_to_play">Finalizado</string>
+    <string name="status_unknown">Desconhecido</string>
+    <string name="game_cover_description">Descrição da capa do jogo</string>
+    <string name="game_status">Status do jogo</string>
+    <string name="game_platforms">Plataformas do jogo</string>
+    <string name="game_estimated_time">Tempo estimado do jogo</string>
+    <string name="game_release_year">Ano de lançamento do jogo</string>
+    <string name="game_distributor">Distribuidora do jogo</string>
+    <string name="game_year">Ano do jogo</string>
+    <string name="game_duration">Duração do jogo</string>
+    <string name="selected_platforms">Plataformas selecionadas</string>
+    <string name="select_platforms">Selecionar plataformas</string>
+    <string name="menu_game_details">Detalhes do jogo</string>
+    <string name="bot_o_para_registrar_a_conta">Botão para registrar a conta</string>
+    <string name="jogando">Em Progresso</string>
+    <string name="quero_jogar">Na Lista</string>
+    <string name="joguei">Finalizado</string>
+    <string name="adicionar_jogo">Adicionar Jogo</string>
+    <string name="sair">Sair</string>
 </resources>

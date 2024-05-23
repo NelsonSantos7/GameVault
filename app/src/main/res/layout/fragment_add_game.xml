@@ -14,35 +14,35 @@
             android:id="@+id/editTextGameTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_title"
+            android:hint="Título do jogo"
             android:inputType="textCapSentences" />
 
         <EditText
             android:id="@+id/editTextGameDistributor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_distributor"
+            android:hint="Distribuidora"
             android:inputType="textCapSentences" />
 
         <EditText
             android:id="@+id/editTextGameYear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_year"
+            android:hint="Ano de lançamento"
             android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextGameDuration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_duration"
+            android:hint="Duração (horas)"
             android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextGameDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/game_description"
+            android:hint="Descrição"
             android:inputType="textMultiLine" />
 
         <TextView
@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"
-            android:text="@string/selected_platforms"
+            android:text="Plataformas selecionadas"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <Spinner
@@ -69,18 +69,18 @@
             android:id="@+id/buttonAddPhoto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_photo" />
+            android:text="Adicionar foto" />
 
         <Button
             android:id="@+id/buttonSubmitGame"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/submit_game" />
+            android:text="Salvar jogo" />
 
         <Button
             android:id="@+id/buttonSelectPlatforms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/select_platforms" />
+            android:text="Selecionar plataformas" />
     </LinearLayout>
 </ScrollView>

@@ -1,36 +1,18 @@
 package com.example.gamevault.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
-import com.example.gamevault.model.Gamemodel
-import kotlinx.coroutines.launch
+import androidx.lifecycle.liveData
+import kotlinx.coroutines.Dispatchers
 
 class GameViewModel(private val repository: GameRepository) : ViewModel() {
-    private val _games = MutableLiveData<List<Gamemodel>>()
-    val games: LiveData<List<Gamemodel>> = _games
-    private val _status = MutableLiveData<LoadStatus>()
-    val status: LiveData<LoadStatus> = _status
 
-    init {
-        loadGames()
+    val games = liveData(Dispatchers.IO) {
+        val retrievedGames = repository.getAllGames()
+        emit(retrievedGames)
     }
 
-    private fun loadGames() {
-        viewModelScope.launch {
-            _status.value = LoadStatus.Loading
-            try {
-                _games.value = repository.getGames()
-                _status.value = LoadStatus.Success
-            } catch (e: Exception) {
-                _status.value = LoadStatus.Error
-            }
-        }
-    }
-
-    class GameViewModelFactory(private val repository: GameRepository): ViewModelProvider.Factory {
+    class Factory(private val repository: GameRepository) : ViewModelProvider.NewInstanceFactory() {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
@@ -38,10 +20,5 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
-    }
-
-
-    enum class LoadStatus {
-        Loading, Success, Error
     }
 }

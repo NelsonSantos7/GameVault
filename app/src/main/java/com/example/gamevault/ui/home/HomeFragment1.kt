@@ -6,22 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gamevault.MyApp
 import com.example.gamevault.databinding.FragmentHome1Binding
 import com.example.gamevault.model.Gamemodel
-import com.example.gamevault.MyApp
-
 
 class HomeFragment1 : Fragment() {
-
     private var _binding: FragmentHome1Binding? = null
     private val binding get() = _binding!!
 
-    private val gameViewModel: GameViewModel by viewModels {
-        GameViewModelFactory((activity?.application as MyApp).repository)
+    private val gameViewModel: HomeViewModel by viewModels {
+        val repository = (requireActivity().application as MyApp).repository
+        HomeViewModelFactory(repository)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -39,10 +36,8 @@ class HomeFragment1 : Fragment() {
         val adapter = GameAdapter { game ->
             navigateToGameDetails(game)
         }
-        binding.gamesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(context)
-            this.adapter = adapter
-        }
+        binding.gamesRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.gamesRecyclerView.adapter = adapter
     }
 
     private fun subscribeUi() {
@@ -52,26 +47,14 @@ class HomeFragment1 : Fragment() {
     }
 
     private fun navigateToGameDetails(game: Gamemodel) {
-        val direction = HomeFragmentDirections.actionNavHomeToGameDetailsFragment(game.id ?: -1, game.titulo)
-        findNavController().navigate(direction)
+        if (isAdded) {
+            val action = HomeFragment1Directions.actionNavHomeToGameDetailsFragment(game)
+            findNavController().navigate(action)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        @JvmStatic fun newInstance() = HomeFragment1()
-    }
-}
-
-class GameViewModelFactory(private val repository: GameRepository): ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return GameViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

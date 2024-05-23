@@ -1,16 +1,18 @@
 package com.example.gamevault
 
 import android.app.Application
-import com.example.gamevault.SQLite.DBhelper
+import com.example.gamevault.firebase.FirebaseHelper
 import com.example.gamevault.ui.home.GameRepository
+import com.google.firebase.FirebaseApp
 
 class MyApp : Application() {
+    lateinit var firebaseHelper: FirebaseHelper
     lateinit var repository: GameRepository
-    private lateinit var dbHelper: DBhelper
 
     override fun onCreate() {
         super.onCreate()
-        dbHelper = DBhelper(this)
-        repository = GameRepository(dbHelper)
+        FirebaseApp.initializeApp(this)
+        firebaseHelper = FirebaseHelper()
+        repository = GameRepository(firebaseHelper)
     }
 }

@@ -9,11 +9,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Detalhes do jogo -->
         <TextView
             android:id="@+id/textViewTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game_title"
+            android:text="Título do Jogo"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_marginBottom="8dp" />
 
@@ -21,7 +22,7 @@
             android:id="@+id/textViewDistributor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game_distributor"
+            android:text="Distribuidora"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginBottom="8dp" />
 
@@ -29,7 +30,7 @@
             android:id="@+id/textViewReleaseYear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game_release_year"
+            android:text="Ano de Lançamento"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginBottom="8dp" />
 
@@ -37,7 +38,7 @@
             android:id="@+id/textViewEstimatedTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game_estimated_time"
+            android:text="Tempo Estimado"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginBottom="8dp" />
 
@@ -45,7 +46,7 @@
             android:id="@+id/textViewPlatforms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game_platforms"
+            android:text="Plataformas"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginBottom="8dp" />
 
@@ -53,7 +54,15 @@
             android:id="@+id/textViewStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/game_status"
+            android:text="Status"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/textViewSummary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Resumo"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:layout_marginBottom="8dp" />
 
@@ -62,9 +71,65 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/game_cover_description"
+            android:contentDescription="Capa do Jogo"
             android:src="@drawable/ic_launcher_background"
             android:adjustViewBounds="true" />
 
+        <!-- Seção de avaliações e classificações -->
+        <LinearLayout
+            android:id="@+id/reviewSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/textViewReviewsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Avaliações"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewReviews"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Formulário de Avaliação -->
+            <TextView
+                android:id="@+id/textViewAddReview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Adicionar Avaliação"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:layout_marginBottom="8dp" />
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1.0"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editTextComment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escreva seu comentário"
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/buttonSubmitReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Enviar Avaliação"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
