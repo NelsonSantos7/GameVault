@@ -1,27 +1,21 @@
 package com.example.gamevault.login
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.gamevault.SQLite.DBhelper
+import androidx.lifecycle.lifecycleScope
 import com.example.gamevault.databinding.ActivityRegisterBinding
 import com.example.gamevault.firebase.FirebaseHelper
 import com.example.gamevault.model.Usermodel
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 import org.mindrot.jbcrypt.BCrypt
 
 class Register : AppCompatActivity() {
-
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var auth: FirebaseAuth
-    private lateinit var dbHelper: DBhelper
     private lateinit var firebaseHelper: FirebaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +24,6 @@ class Register : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
-        dbHelper = DBhelper(this)
         firebaseHelper = FirebaseHelper()
 
         binding.buttonRegister.setOnClickListener {
@@ -55,13 +48,17 @@ class Register : AppCompatActivity() {
 
         val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
 
-        CoroutineScope(Dispatchers.IO).launch {
+        lifecycleScope.launch {
             try {
-                // Register user in Firebase Authentication
+                val userExists = firebaseHelper.checkUserExists(email)
+                if (userExists) {
+                    Toast.makeText(this@Register, "Este email já está registrado.", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
                 val authResult = auth.createUserWithEmailAndPassword(email, password).await()
                 val firebaseUser = authResult.user
 
-                // Check if user registration was successful
                 if (firebaseUser != null) {
                     val newUser = Usermodel(
                         id = firebaseUser.uid,
@@ -70,31 +67,21 @@ class Register : AppCompatActivity() {
                         password = hashedPassword
                     )
 
-                    // Add user to Firebase Firestore
-                    firebaseHelper.addUserToFirestoreSuspend(newUser)
-
-                    // Add user to SQLite Database
-                    val values = ContentValues().apply {
-                        put(DBhelper.COLUMN_USER_EMAIL, email)
-                        put(DBhelper.COLUMN_USER_PASSWORD, hashedPassword)
-                        put(DBhelper.COLUMN_USER_USERNAME, username)
+                    firebaseHelper.addUserToFirestore(newUser)
+                    with(getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE).edit()) {
+                        putString("USERNAME", username)
+                        putString("USER_EMAIL", email)
+                        apply()
                     }
-                    dbHelper.writableDatabase.insert(DBhelper.TABLE_USERS, null, values)
 
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@Register, "Usuário registrado com sucesso.", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this@Register, Login::class.java))
-                        finish()
-                    }
+                    Toast.makeText(this@Register, "Usuário registrado com sucesso.", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@Register, Login::class.java))
+                    finish()
                 } else {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@Register, "Falha ao registrar usuário.", Toast.LENGTH_SHORT).show()
-                    }
+                    Toast.makeText(this@Register, "Falha ao registrar usuário.", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(this@Register, "Erro ao registrar usuário: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+                Toast.makeText(this@Register, "Erro ao registrar usuário: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }

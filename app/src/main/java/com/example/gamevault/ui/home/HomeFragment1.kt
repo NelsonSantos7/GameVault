@@ -6,19 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gamevault.MyApp
 import com.example.gamevault.databinding.FragmentHome1Binding
 import com.example.gamevault.model.Gamemodel
+import com.example.gamevault.viewmodel.GameViewModel
+import androidx.navigation.fragment.findNavController // Adicione este import
 
 class HomeFragment1 : Fragment() {
+
     private var _binding: FragmentHome1Binding? = null
     private val binding get() = _binding!!
 
-    private val gameViewModel: HomeViewModel by viewModels {
-        val repository = (requireActivity().application as MyApp).repository
-        HomeViewModelFactory(repository)
+    private val gameViewModel: GameViewModel by viewModels {
+        GameViewModelFactory((requireActivity().application as MyApp).repository)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

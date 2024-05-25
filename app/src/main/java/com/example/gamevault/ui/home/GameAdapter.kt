@@ -6,10 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gamevault.databinding.ItemGameBinding
 import com.example.gamevault.model.Gamemodel
 
-class GameAdapter(private val onGameClicked: (Gamemodel) -> Unit) :
-    RecyclerView.Adapter<GameAdapter.GameViewHolder>() {
+class GameAdapter(
+    private val onGameClicked: (Gamemodel) -> Unit
+) : RecyclerView.Adapter<GameAdapter.GameViewHolder>() {
 
-    private var games = listOf<Gamemodel>()
+    private var games: List<Gamemodel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {
         val binding = ItemGameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,16 +23,15 @@ class GameAdapter(private val onGameClicked: (Gamemodel) -> Unit) :
 
     override fun getItemCount(): Int = games.size
 
-    fun submitList(list: List<Gamemodel>) {
-        games = list
+    fun submitList(games: List<Gamemodel>) {
+        this.games = games
         notifyDataSetChanged()
     }
 
-    inner class GameViewHolder(private val binding: ItemGameBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class GameViewHolder(private val binding: ItemGameBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(game: Gamemodel) {
-            binding.textViewGameTitle.text = game.titulo
-            // Configure other views in the item layout
+            binding.textViewGameTitle.text = game.title
+            binding.textViewGameDistributor.text = game.distributor
             binding.root.setOnClickListener {
                 onGameClicked(game)
             }

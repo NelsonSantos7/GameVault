@@ -22,6 +22,7 @@ import com.example.gamevault.databinding.ActivityMainBinding
 import com.example.gamevault.firebase.FirebaseHelper
 import com.example.gamevault.login.Login
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navController: NavController
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var firebaseHelper: FirebaseHelper
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_playing, R.id.nav_Ive_played, R.id.nav_AddGame
+                R.id.nav_home, R.id.nav_im_playing, R.id.nav_want_to_play, R.id.nav_Ive_played, R.id.nav_AddGame
             ), drawerLayout
         )
 
@@ -53,9 +55,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE)
         firebaseHelper = FirebaseHelper()
+        firebaseAuth = FirebaseAuth.getInstance()
 
+        checkAuthentication()
         updateNavHeader()
         setupProfileImageClickListener()
+    }
+
+    private fun checkAuthentication() {
+        val currentUser = firebaseAuth.currentUser
+        if (currentUser == null) {
+            // Usuário não autenticado, redirecionar para a tela de login
+            val loginIntent = Intent(this, Login::class.java)
+            startActivity(loginIntent)
+            finish()
+        }
     }
 
     private fun updateNavHeader() {
@@ -64,8 +78,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val userEmailTextView = headerView.findViewById<TextView>(R.id.textViewEmail)
         val profileImageView: CircleImageView = headerView.findViewById(R.id.imageView)
 
-        userNameTextView.text = sharedPreferences.getString("USERNAME", "Usuário Padrão")
-        userEmailTextView.text = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
+        val username = sharedPreferences.getString("USERNAME", "Usuário Padrão")
+        val email = sharedPreferences.getString("USER_EMAIL", "Email Padrão")
+
+        userNameTextView.text = username
+        userEmailTextView.text = email
         sharedPreferences.getString("USER_PROFILE_IMAGE_URI", null)?.let {
             profileImageView.setImageURI(Uri.parse(it))
         }
@@ -104,10 +121,27 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 logout()
                 true
             }
-            else -> {
-                applyNavigationAnimations(item.itemId)
+            R.id.inicio -> {
+                applyNavigationAnimations(R.id.nav_home)
                 true
             }
+            R.id.Desejado -> {
+                applyNavigationAnimations(R.id.nav_im_playing)
+                true
+            }
+            R.id.Ajogar -> {
+                applyNavigationAnimations(R.id.nav_want_to_play)
+                true
+            }
+            R.id.concluido -> {
+                applyNavigationAnimations(R.id.nav_Ive_played)
+                true
+            }
+            R.id.nav_news -> {
+                applyNavigationAnimations(R.id.nav_AddGame)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

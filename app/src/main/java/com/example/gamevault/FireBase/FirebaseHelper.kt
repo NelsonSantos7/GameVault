@@ -1,10 +1,11 @@
 package com.example.gamevault.firebase
 
 import com.example.gamevault.model.Gamemodel
+import com.example.gamevault.model.NoticiasModel
 import com.example.gamevault.model.ReviewModel
 import com.example.gamevault.model.Usermodel
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
@@ -12,79 +13,27 @@ class FirebaseHelper {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-    fun addGameToFirestore(game: Gamemodel, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("games")
-            .add(game)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { e -> onFailure(e) }
+    suspend fun getNoticiasFromFirestore(): List<NoticiasModel> {
+        val result = db.collection("noticias").get().await()
+        return result.toObjects(NoticiasModel::class.java)
+    }
+    fun updateGameStatus(gameId: String, newStatus: Int): Task<Void> {
+        return db.collection("games").document(gameId)
+            .update("status", newStatus)
     }
 
-    fun getGamesFromFirestore(onSuccess: (List<Gamemodel>) -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("games")
-            .get()
-            .addOnSuccessListener { result ->
-                val games = result.map { document -> document.toObject(Gamemodel::class.java) }
-                onSuccess(games)
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
-    }
-
-    fun addUserToFirestore(user: Usermodel, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { e -> onFailure(e) }
-    }
-
-    fun getUsersFromFirestore(onSuccess: (List<Usermodel>) -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                val users = result.map { document -> document.toObject(Usermodel::class.java) }
-                onSuccess(users)
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
-    }
-
-    fun addReviewToFirestore(review: ReviewModel, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("reviews")
-            .add(review)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { e -> onFailure(e) }
-    }
-
-    fun getReviewsFromFirestore(onSuccess: (List<ReviewModel>) -> Unit, onFailure: (Exception) -> Unit) {
-        db.collection("reviews")
-            .get()
-            .addOnSuccessListener { result ->
-                val reviews = result.map { document -> document.toObject(ReviewModel::class.java) }
-                onSuccess(reviews)
-            }
-            .addOnFailureListener { e ->
-                onFailure(e)
-            }
-    }
-
-    suspend fun addGameToFirestoreSuspend(game: Gamemodel) {
-        db.collection("games").add(game).await()
-    }
-
-    suspend fun getGamesFromFirestoreSuspend(): List<Gamemodel> {
+    suspend fun getGamesFromFirestore(): List<Gamemodel> {
         val result = db.collection("games").get().await()
         return result.documents.map { it.toObject(Gamemodel::class.java)!! }
     }
 
-    suspend fun addUserToFirestoreSuspend(user: Usermodel) {
-        db.collection("users").add(user).await()
+
+    fun getCurrentUserId(): String? {
+        return auth.currentUser?.uid
     }
 
-    suspend fun getUsersFromFirestoreSuspend(): List<Usermodel> {
-        val result = db.collection("users").get().await()
-        return result.documents.map { it.toObject(Usermodel::class.java)!! }
+    fun logoutUser() {
+        auth.signOut()
     }
 
     suspend fun signInUser(email: String, password: String): Boolean {
@@ -96,20 +45,56 @@ class FirebaseHelper {
         }
     }
 
-    fun getCurrentUser(): FirebaseUser? {
-        return auth.currentUser
-    }
-
-    fun logoutUser() {
-        auth.signOut()
-    }
-
     suspend fun checkUserExists(email: String): Boolean {
         val result = db.collection("users")
             .whereEqualTo("email", email)
             .get()
             .await()
-
         return result.documents.isNotEmpty()
     }
+
+    suspend fun addUserToFirestore(user: Usermodel) {
+        val userId = user.id ?: throw IllegalArgumentException("User ID cannot be null")
+        db.collection("users")
+            .document(userId)
+            .set(user)
+            .await()
+    }
+
+
+    suspend fun getUserByEmail(email: String): Usermodel? {
+        val result = db.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .await()
+        return if (result.documents.isNotEmpty()) {
+            result.documents[0].toObject(Usermodel::class.java)
+        } else {
+            null
+        }
+    }
+
+    suspend fun getGamesByStatusAndUser(status: Int, userId: String): List<Gamemodel> {
+        val result = db.collection("games")
+            .whereEqualTo("status", status)
+            .whereEqualTo("userId", userId)
+            .get()
+            .await()
+        return result.toObjects(Gamemodel::class.java)
+    }
+
+    suspend fun addGameToFirestore(game: Gamemodel) {
+        db.collection("games").add(game).await()
+    }
+
+
+    suspend fun addReviewToFirestore(review: ReviewModel) {
+        db.collection("reviews").add(review).await()
+    }
+
+    fun addReview(gameId: String, review: Map<String, Any>) = db.collection("games").document(gameId)
+        .collection("reviews")
+        .add(review)
+
+
 }

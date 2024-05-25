@@ -6,54 +6,60 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.gamevault.MyApp
+import com.example.gamevault.databinding.FragmentFinalizadoBinding
 import com.example.gamevault.model.GameStatus
-import com.example.gamevault.SQLite.DBhelper
-import com.example.gamevault.databinding.FragmentFinalizadoListBinding
 import com.example.gamevault.model.Gamemodel
+import com.example.gamevault.ui.MyItemRecyclerViewAdapter
+import com.example.gamevault.ui.home.GameRepository
+import kotlinx.coroutines.launch
 
 class Finalizado : Fragment() {
 
-    private var _binding: FragmentFinalizadoListBinding? = null
+    private var _binding: FragmentFinalizadoBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var dbHelper: DBhelper
+    private lateinit var repository: GameRepository
     private lateinit var viewAdapter: MyItemRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentFinalizadoListBinding.inflate(inflater, container, false)
-        dbHelper = DBhelper(requireContext())
+    ): View {
+        _binding = FragmentFinalizadoBinding.inflate(inflater, container, false)
 
-        // Obtenha o ID do usuário logado
-        val sharedPreferences = requireContext().getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getInt("USER_ID", -1)
+        repository = (requireActivity().application as MyApp).repository
 
-        // Use GameStatus.FINALIZADOS para buscar jogos com status "Finalizados" do usuário logado
-        val gamesFinished = dbHelper.getGamesByStatusAndUser(GameStatus.FINALIZADOS, userId)
-
-        viewAdapter = MyItemRecyclerViewAdapter { game ->
-            navigateToGameDetails(game)
-        }
-
-        binding.list.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = viewAdapter
-        }
-
-        viewAdapter.submitList(gamesFinished)
+        setupRecyclerView()
+        loadGames()
 
         return binding.root
     }
 
-    private fun navigateToGameDetails(game: Gamemodel) {
-        if (isAdded) {
-            val action = FinalizadoDirections.actionNavFinalizadoToGameDetailsFragment(game)
-            findNavController().navigate(action)
+    private fun setupRecyclerView() {
+        viewAdapter = MyItemRecyclerViewAdapter { game ->
+            navigateToGameDetails(game)
         }
+        binding.recyclerViewFinalizado.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = viewAdapter
+        }
+    }
+
+    private fun loadGames() {
+        val sharedPreferences = requireContext().getSharedPreferences("com.example.gamevault.prefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getString("USER_ID", null) ?: return
+
+        lifecycleScope.launch {
+            val completedGames = repository.getGamesByStatusAndUser(GameStatus.COMPLETED.status, userId)
+            viewAdapter.submitList(completedGames)
+        }
+    }
+
+    private fun navigateToGameDetails(game: Gamemodel) {
+        // Implementar a navegação para detalhes do jogo aqui
     }
 
     override fun onDestroyView() {

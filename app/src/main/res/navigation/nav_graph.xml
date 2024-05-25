@@ -31,17 +31,17 @@
         android:label="Em Progresso"
         tools:layout="@layout/fragment_em_progresso_list">
         <action
-            android:id="@+id/action_nav_em_progresso_to_gameDetailsFragment"
+            android:id="@+id/action_nav_im_playing_to_gameDetailsFragment"
             app:destination="@id/gameDetailsFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_want_to_playing"
+        android:id="@+id/nav_want_to_play"
         android:name="com.example.gamevault.ui.NaLista.NaLita"
         android:label="Na Lista"
         tools:layout="@layout/fragment_na_lita">
         <action
-            android:id="@+id/action_nav_na_lista_to_gameDetailsFragment"
+            android:id="@+id/action_nav_want_to_play_to_gameDetailsFragment"
             app:destination="@id/gameDetailsFragment" />
     </fragment>
 
@@ -57,9 +57,9 @@
 
     <fragment
         android:id="@+id/nav_AddGame"
-        android:name="com.example.gamevault.ui.AddGame.AddGameFragment"
-        android:label="Adicionar Jogo"
-        tools:layout="@layout/fragment_add_game" />
+        android:name="com.example.gamevault.ui.Noticias.NoticiasFragment"
+        android:label="Noticias"
+        tools:layout="@layout/fragment_noticias" />
 
     <fragment
         android:id="@+id/userProfileFragment"

@@ -3,6 +3,7 @@ package com.example.gamevault.login
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +25,6 @@ class Login : AppCompatActivity() {
         firebaseHelper = FirebaseHelper()
         sharedPreferences = getSharedPreferences("com.example.gamevault.prefs", MODE_PRIVATE)
 
-        // Verifica se o usuário já está logado e navega diretamente para a MainActivity
         if (isLoggedIn()) {
             navigateToMainActivity()
         }
@@ -42,16 +42,23 @@ class Login : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Por favor, forneça um e-mail válido.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             lifecycleScope.launch {
                 val success = firebaseHelper.signInUser(email, password)
                 if (success) {
-                    val user = firebaseHelper.getCurrentUser()
-                    user?.let {
-                        saveLoginStatus(email, it.displayName)
+                    val user = firebaseHelper.getUserByEmail(email)
+                    if (user != null) {
+                        saveLoginStatus(user.username, email)
+                        navigateToMainActivity()
+                    } else {
+                        Toast.makeText(this@Login, "Falha ao carregar dados do usuário.", Toast.LENGTH_SHORT).show()
                     }
-                    navigateToMainActivity()
                 } else {
-                    Toast.makeText(this@Login, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@Login, "Falha na autenticação.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -61,12 +68,13 @@ class Login : AppCompatActivity() {
         }
     }
 
-    private fun saveLoginStatus(email: String, username: String?) {
+    private fun saveLoginStatus(username: String, email: String) {
         with(sharedPreferences.edit()) {
-            putString("USER_EMAIL", email)
             putString("USERNAME", username)
+            putString("USER_EMAIL", email)
             apply()
         }
+        Log.d("Login", "Saved USERNAME: $username and USER_EMAIL: $email to SharedPreferences")
     }
 
     private fun navigateToMainActivity() {
@@ -76,7 +84,6 @@ class Login : AppCompatActivity() {
     }
 
     private fun isLoggedIn(): Boolean {
-        // Verifica se o e-mail do usuário está presente nas preferências compartilhadas
         return sharedPreferences.contains("USER_EMAIL")
     }
 }

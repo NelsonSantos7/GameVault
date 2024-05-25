@@ -6,13 +6,13 @@ import com.example.gamevault.ui.home.GameRepository
 import com.google.firebase.FirebaseApp
 
 class MyApp : Application() {
-    lateinit var firebaseHelper: FirebaseHelper
     lateinit var repository: GameRepository
+        private set
 
     override fun onCreate() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
-        firebaseHelper = FirebaseHelper()
+        val firebaseHelper = FirebaseHelper()
         repository = GameRepository(firebaseHelper)
     }
 }

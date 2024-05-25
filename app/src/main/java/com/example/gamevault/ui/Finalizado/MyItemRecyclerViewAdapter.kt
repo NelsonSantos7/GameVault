@@ -1,54 +1,40 @@
-package com.example.gamevault.ui.Finalizado
+package com.example.gamevault.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gamevault.R
-import com.example.gamevault.databinding.FragmentFinalizadoBinding
+import com.example.gamevault.databinding.ItemGameBinding
 import com.example.gamevault.model.Gamemodel
-import com.squareup.picasso.Picasso
 
 class MyItemRecyclerViewAdapter(
     private val onGameClicked: (Gamemodel) -> Unit
-) : ListAdapter<Gamemodel, MyItemRecyclerViewAdapter.ViewHolder>(GameDiffCallback()) {
+) : RecyclerView.Adapter<MyItemRecyclerViewAdapter.GameViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            FragmentFinalizadoBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ), onGameClicked
-        )
+    private var games: List<Gamemodel> = emptyList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GameViewHolder {
+        val binding = ItemGameBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return GameViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item)
+    override fun onBindViewHolder(holder: GameViewHolder, position: Int) {
+        holder.bind(games[position])
     }
 
-    inner class ViewHolder(
-        private val binding: FragmentFinalizadoBinding,
-        private val onGameClicked: (Gamemodel) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
+    override fun getItemCount(): Int = games.size
 
+    fun submitList(games: List<Gamemodel>) {
+        this.games = games
+        notifyDataSetChanged()
+    }
+
+    inner class GameViewHolder(private val binding: ItemGameBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(game: Gamemodel) {
-            with(binding) {
-                textViewGameTitle.text = game.titulo
-                Picasso.get()
-                    .load(game.fotoUrl)
-                    .placeholder(R.drawable.ic_game_placeholder)
-                    .error(R.drawable.ic_game_placeholder)
-                    .into(imageViewGameCover)
-                itemView.setOnClickListener { onGameClicked(game) }
+            binding.textViewGameTitle.text = game.title
+            binding.textViewGameDistributor.text = game.distributor
+            binding.root.setOnClickListener {
+                onGameClicked(game)
             }
         }
-    }
-
-    class GameDiffCallback : DiffUtil.ItemCallback<Gamemodel>() {
-        override fun areItemsTheSame(oldItem: Gamemodel, newItem: Gamemodel): Boolean = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: Gamemodel, newItem: Gamemodel): Boolean = oldItem == newItem
     }
 }

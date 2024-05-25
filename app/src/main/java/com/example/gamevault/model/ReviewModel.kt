@@ -1,9 +1,9 @@
 package com.example.gamevault.model
 
 data class ReviewModel(
-    val id: Long? = null,
-    val gameId: Int,
-    val userId: Int,
+    var id: String? = null,
+    val gameId: String,
+    val userId: String,
     val rating: Int,
     val comment: String
 )

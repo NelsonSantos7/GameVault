@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.home.HomeFragment1">
 
-    <data>
-        <!-- Defina os bindings necessários aqui, se houver -->
-    </data>
+    <data></data>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,6 +25,5 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             tools:listitem="@layout/item_game" />
-
     </LinearLayout>
 </layout>

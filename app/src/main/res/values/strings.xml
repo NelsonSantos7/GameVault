@@ -30,11 +30,17 @@
     <string name="game_title">Título do jogo</string>
     <string name="game_details">Detalhes do jogo</string>
 
-    <string-array name="game_status_options">
-        <item>Em Progresso</item>
-        <item>Na Lista</item>
-        <item>Finalizado</item>
-    </string-array>
+
+        <string-array name="game_status_array">
+            <item>Desejado</item>
+            <item>A Jogar</item>
+            <item>Concluído</item>
+        </string-array>
+
+
+    <string name="noticias_image">Imagem da Notícia</string>
+
+
 
     <string-array name="platform_options">
         <item>PlayStation</item>
@@ -78,4 +84,8 @@
     <string name="joguei">Finalizado</string>
     <string name="adicionar_jogo">Adicionar Jogo</string>
     <string name="sair">Sair</string>
+    <string name="noticias">Noticias</string>
+    <string name="a_jogar">A jogar</string>
+    <string name="desejado">Desejado</string>
+    <string name="concluido">Concluido</string>
 </resources>

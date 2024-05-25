@@ -1,135 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.GameDetails.GameDetailsFragment">
+
+    <data></data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- Detalhes do jogo -->
-        <TextView
-            android:id="@+id/textViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Título do Jogo"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:layout_marginBottom="8dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/textViewDistributor"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewGameTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Distribuidora"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp" />
+            android:text="Title"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textViewReleaseYear"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewGameDistributor"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ano de Lançamento"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp" />
+            android:text="Distributor" />
 
         <TextView
-            android:id="@+id/textViewEstimatedTime"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewGameReleaseYear"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tempo Estimado"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp" />
+            android:text="Release Year" />
 
         <TextView
-            android:id="@+id/textViewPlatforms"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewGameEstimatedTime"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Plataformas"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp" />
+            android:text="Estimated Time" />
 
         <TextView
-            android:id="@+id/textViewStatus"
-            android:layout_width="match_parent"
+            android:id="@+id/textViewGameMetacriticScore"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Status"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp" />
+            android:text="Metacritic Score" />
 
-        <TextView
-            android:id="@+id/textViewSummary"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/buttonUpdateStatusPlaying"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Resumo"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="8dp" />
+            android:text="A Jogar" />
 
-        <ImageView
-            android:id="@+id/imageViewGameCover"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:contentDescription="Capa do Jogo"
-            android:src="@drawable/ic_launcher_background"
-            android:adjustViewBounds="true" />
-
-        <!-- Seção de avaliações e classificações -->
-        <LinearLayout
-            android:id="@+id/reviewSection"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/buttonUpdateStatusWantToPlay"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginTop="16dp">
+            android:text="Desejado" />
 
-            <TextView
-                android:id="@+id/textViewReviewsTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Avaliações"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_marginBottom="8dp" />
+        <Button
+            android:id="@+id/buttonUpdateStatusCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Concluído" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewReviews"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <!-- Formulário de Avaliação -->
-            <TextView
-                android:id="@+id/textViewAddReview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Adicionar Avaliação"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:layout_marginBottom="8dp" />
-
-            <RatingBar
-                android:id="@+id/ratingBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:numStars="5"
-                android:stepSize="1.0"
-                android:layout_marginBottom="8dp" />
-
-            <EditText
-                android:id="@+id/editTextComment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Escreva seu comentário"
-                android:inputType="textMultiLine"
-                android:minLines="3"
-                android:layout_marginBottom="8dp" />
-
-            <Button
-                android:id="@+id/buttonSubmitReview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Enviar Avaliação"
-                android:layout_marginBottom="16dp" />
-        </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</layout>

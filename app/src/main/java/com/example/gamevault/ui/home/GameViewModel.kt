@@ -1,24 +1,16 @@
-package com.example.gamevault.ui.home
+package com.example.gamevault.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import com.example.gamevault.model.Gamemodel
+import com.example.gamevault.ui.home.GameRepository
 import kotlinx.coroutines.Dispatchers
 
 class GameViewModel(private val repository: GameRepository) : ViewModel() {
 
-    val games = liveData(Dispatchers.IO) {
+    val games: LiveData<List<Gamemodel>> = liveData(Dispatchers.IO) {
         val retrievedGames = repository.getAllGames()
         emit(retrievedGames)
-    }
-
-    class Factory(private val repository: GameRepository) : ViewModelProvider.NewInstanceFactory() {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(GameViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return GameViewModel(repository) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
     }
 }

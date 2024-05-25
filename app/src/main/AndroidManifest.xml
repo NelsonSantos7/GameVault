@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.gamevault">
 
-    <!-- Scoped Storage permissions for Android 10 e acima -->
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+    <!-- Permissão para acesso ao armazenamento externo (Android 10 e acima) -->
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
 
     <!-- Permissão para acesso à internet -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -26,17 +27,17 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.GameVault.NoActionBar" />
-
-        <!-- Login Activity -->
-        <activity
-            android:name=".login.Login"
-            android:exported="true">
+            android:theme="@style/Theme.GameVault.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Login Activity -->
+        <activity
+            android:name=".login.Login"
+            android:exported="true" />
 
         <!-- Register Activity -->
         <activity
@@ -48,12 +49,5 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
-        <!-- AddReview Activity -->
-        <activity
-            android:name=".ui.AddReviewActivity"
-            android:exported="false" />
-
-        <!-- Outros fragments ou atividades conforme necessário -->
     </application>
 </manifest>

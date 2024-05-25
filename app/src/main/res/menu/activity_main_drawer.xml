@@ -5,25 +5,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/inicio"
             android:icon="@drawable/baseline_home_24"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_im_playing"
+            android:id="@+id/Desejado"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/jogando" />
+            android:title="@string/a_jogar" />
         <item
-            android:id="@+id/nav_want_to_playing"
+            android:id="@+id/Ajogar"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/quero_jogar" />
+            android:title="@string/desejado" />
         <item
-            android:id="@+id/nav_Ive_played"
+            android:id="@+id/concluido"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/joguei" />
+            android:title="@string/concluido" />
         <item
-            android:id="@+id/nav_AddGame"
+            android:id="@+id/nav_news"
             android:icon="@drawable/baseline_games_24"
-            android:title="@string/adicionar_jogo" />
+            android:title="@string/noticias" />
     </group>
     <group android:id="@+id/group_logout">
         <item
